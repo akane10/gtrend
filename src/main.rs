@@ -14,16 +14,44 @@ fn select_data(html: &str) -> Vec<String> {
     let document = Document::from(html);
     let mut vec: Vec<String> = Vec::new();
 
-    for node in document.clone().find(Name("h1")) {
-        let push_to_vec = |y: &str| -> Option<()> {
-            vec.push(y.to_string());
-            Some(())
+    for node in document.clone().find(Class("Box-row")) {
+        let escape = |str_: String| -> String {
+            str_.split_ascii_whitespace()
+                .fold(String::new(), |acc, val| {
+                    if acc.is_empty() {
+                        val.to_string()
+                    } else {
+                        format!("{} {}", acc, val)
+                    }
+                })
         };
 
-        node.find(Name("a"))
+        let username_reponame: Option<(String, String)> = node
+            .find(Name("h1"))
             .next()
-            .and_then(|y| y.attr("href"))
-            .and_then(push_to_vec);
+            .and_then(|x| x.find(Name("a")).next())
+            .and_then(|x| x.attr("href"))
+            .map(|x| {
+                let y = x.split("/").collect::<Vec<_>>();
+                (y[1].to_string(), y[2].to_string())
+            });
+
+        let current_star: Option<String> = node
+            .find(Class("float-sm-right"))
+            .next()
+            .and_then(|tag| Some(escape(tag.text())));
+
+        let lang: Option<String> = node
+            .find(Attr("itemprop", "programmingLanguage"))
+            .next()
+            .and_then(|x| Some(x.text()));
+
+        let desc: Option<String> = node
+            .find(Name("p"))
+            .next()
+            .and_then(|x| Some(escape(x.text())));
+
+        println!("x: {:?}", current_star);
     }
     vec
 }
@@ -33,9 +61,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let html = fetch_html(GITHUB_URL).await;
     let data = match html {
         Ok(txt) => select_data(&txt),
-        _ => Vec::new(),
+        _ => {
+            println!("err");
+            Vec::new()
+        }
     };
     println!("{:?}", data);
-
     Ok(())
 }
