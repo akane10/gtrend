@@ -15,17 +15,16 @@ fn select_data(html: &str) -> Vec<String> {
     let mut vec: Vec<String> = Vec::new();
 
     for node in document.clone().find(Name("h1")) {
-        let mut x = node.find(Name("a"));
+        // let mut x = node.find(Name("a"));
         let push_to_vec = |y: &str| -> Option<()> {
             vec.push(y.to_string());
             Some(())
         };
 
-        x.next().and_then(|y| y.attr("href")).and_then(push_to_vec);
-        // match x.next() {
-        // Some(xx) => vec.push(xx.attr("href").unwrap().to_string()),
-        // None => (),
-        // }
+        node.find(Name("a"))
+            .next()
+            .and_then(|y| y.attr("href"))
+            .and_then(push_to_vec);
     }
     vec
 }
