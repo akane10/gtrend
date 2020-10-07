@@ -16,10 +16,16 @@ fn select_data(html: &str) -> Vec<String> {
 
     for node in document.clone().find(Name("h1")) {
         let mut x = node.find(Name("a"));
-        match x.next() {
-            Some(xx) => vec.push(xx.attr("href").unwrap().to_string()),
-            None => (),
-        }
+        let push_to_vec = |y: &str| -> Option<()> {
+            vec.push(y.to_string());
+            Some(())
+        };
+
+        x.next().and_then(|y| y.attr("href")).and_then(push_to_vec);
+        // match x.next() {
+        // Some(xx) => vec.push(xx.attr("href").unwrap().to_string()),
+        // None => (),
+        // }
     }
     vec
 }
@@ -27,7 +33,11 @@ fn select_data(html: &str) -> Vec<String> {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let html = fetch_html(GITHUB_URL).await;
-    let data = select_data(&html.unwrap());
+    // let data = select_data(&html.unwrap());
+    let data = match html {
+        Ok(txt) => select_data(&txt),
+        _ => Vec::new(),
+    };
     println!("{:?}", data);
 
     Ok(())
