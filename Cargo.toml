@@ -1,0 +1,13 @@
+[package]
+name = "gtrend"
+version = "0.1.0"
+authors = ["yapie <targaryen.akane@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.10", features = ["json"] }
+tokio = { version = "0.2", features = ["full"] }
+scraper = "0.12.0"
+select = "0.5.0"
