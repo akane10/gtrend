@@ -3,7 +3,7 @@
 use select::document::Document;
 use select::predicate::{Attr, Class, Name, Predicate};
 
-const GITHUB_URL: &str = "https://github.com/trending?since=daily";
+const GITHUB_URL: &str = "https://github.com/trending";
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let resp = reqwest::get(url).await?.text().await?;
@@ -15,7 +15,6 @@ fn select_data(html: &str) -> Vec<String> {
     let mut vec: Vec<String> = Vec::new();
 
     for node in document.clone().find(Name("h1")) {
-        // let mut x = node.find(Name("a"));
         let push_to_vec = |y: &str| -> Option<()> {
             vec.push(y.to_string());
             Some(())
@@ -32,7 +31,6 @@ fn select_data(html: &str) -> Vec<String> {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let html = fetch_html(GITHUB_URL).await;
-    // let data = select_data(&html.unwrap());
     let data = match html {
         Ok(txt) => select_data(&txt),
         _ => Vec::new(),
