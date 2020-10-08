@@ -1,18 +1,26 @@
-// use std::collections::HashMap;
-// use scraper::Html;
 use select::document::Document;
 use select::predicate::{Attr, Class, Name, Predicate};
 
 const GITHUB_URL: &str = "https://github.com/trending";
+
+#[derive(Debug)]
+struct Github {
+    author: Option<String>,
+    name: Option<String>,
+    current_star: Option<String>,
+    description: Option<String>,
+    programming_language: Option<String>,
+    url: Option<String>,
+}
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let resp = reqwest::get(url).await?.text().await?;
     Ok(resp)
 }
 
-fn select_data(html: &str) -> Vec<String> {
+fn select_data(html: &str) -> Vec<Github> {
     let document = Document::from(html);
-    let mut vec: Vec<String> = Vec::new();
+    let mut vec: Vec<Github> = Vec::new();
 
     for node in document.clone().find(Class("Box-row")) {
         let escape = |str_: String| -> String {
@@ -51,7 +59,29 @@ fn select_data(html: &str) -> Vec<String> {
             .next()
             .and_then(|x| Some(escape(x.text())));
 
-        println!("x: {:?}", current_star);
+        let url: Option<String> = Some(format!(
+            "{}/{}/{}",
+            String::from("https://github.com"),
+            username_reponame.clone().unwrap().0,
+            username_reponame.clone().unwrap().1
+        ));
+
+        println!("x: {:?}", desc);
+        let github: Github = Github {
+            author: match username_reponame.clone() {
+                Some(val) => Some(val.0),
+                _ => None,
+            },
+            name: match username_reponame.clone() {
+                Some(val) => Some(val.1),
+                _ => None,
+            },
+            current_star: current_star,
+            programming_language: lang,
+            description: desc,
+            url: url,
+        };
+        vec.push(github);
     }
     vec
 }
