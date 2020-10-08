@@ -11,6 +11,8 @@ struct Github {
     description: Option<String>,
     programming_language: Option<String>,
     url: Option<String>,
+    stars: Option<String>,
+    forks: Option<String>,
 }
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -66,7 +68,12 @@ fn select_data(html: &str) -> Vec<Github> {
             username_reponame.clone().unwrap().1
         ));
 
-        println!("x: {:?}", desc);
+        let stars_forks: Vec<String> = node
+            .find(Class("muted-link"))
+            .map(|x| escape(x.text()))
+            .collect::<Vec<_>>();
+
+        // println!("x: {:?}", stars_forks);
         let github: Github = Github {
             author: match username_reponame.clone() {
                 Some(val) => Some(val.0),
@@ -80,6 +87,8 @@ fn select_data(html: &str) -> Vec<Github> {
             programming_language: lang,
             description: desc,
             url: url,
+            stars: Some(stars_forks[0].clone()),
+            forks: Some(stars_forks[1].clone()),
         };
         vec.push(github);
     }
