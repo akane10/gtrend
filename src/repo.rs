@@ -4,15 +4,15 @@ use select::predicate::{Attr, Class, Name};
 const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug)]
-pub struct Github {
-    author: Option<String>,
-    name: Option<String>,
-    current_star: Option<String>,
-    description: Option<String>,
-    programming_language: Option<String>,
-    url: Option<String>,
-    stars: Option<String>,
-    forks: Option<String>,
+pub struct Repository {
+    pub author: Option<String>,
+    pub name: Option<String>,
+    pub current_star: Option<String>,
+    pub description: Option<String>,
+    pub programming_language: Option<String>,
+    pub url: Option<String>,
+    pub stars: Option<String>,
+    pub forks: Option<String>,
 }
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -20,9 +20,9 @@ async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     Ok(resp)
 }
 
-fn select_data(html: &str) -> Vec<Github> {
+fn select_data(html: &str) -> Vec<Repository> {
     let document = Document::from(html);
-    let mut vec: Vec<Github> = Vec::new();
+    let mut vec: Vec<Repository> = Vec::new();
 
     for node in document.clone().find(Class("Box-row")) {
         let escape = |str_: String| -> String {
@@ -74,7 +74,7 @@ fn select_data(html: &str) -> Vec<Github> {
             .collect::<Vec<_>>();
 
         // println!("x: {:?}", stars_forks);
-        let github: Github = Github {
+        let repo: Repository = Repository {
             author: match username_reponame.clone() {
                 Some(val) => Some(val.0),
                 _ => None,
@@ -90,15 +90,15 @@ fn select_data(html: &str) -> Vec<Github> {
             stars: Some(stars_forks[0].clone()),
             forks: Some(stars_forks[1].clone()),
         };
-        vec.push(github);
+        vec.push(repo);
     }
     vec
 }
 
 #[tokio::main]
-pub async fn repo() -> Result<Vec<Github>, Box<dyn std::error::Error>> {
+pub async fn repo() -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
     let html = fetch_html(GITHUB_URL).await;
-    let data: Vec<Github> = match html {
+    let data: Vec<Repository> = match html {
         Ok(txt) => select_data(&txt),
         _ => {
             println!("err");

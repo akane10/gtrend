@@ -1,22 +1,22 @@
 use select::document::Document;
-use select::predicate::{Attr, Class, Name, Predicate};
+use select::predicate::{Class, Name};
 
 const GITHUB_URL: &str = "https://github.com/trending/developers";
 
 #[derive(Debug)]
 pub struct Repo {
-    name: Option<String>,
-    description: Option<String>,
-    url: Option<String>,
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub url: Option<String>,
 }
 
 #[derive(Debug)]
 pub struct Developer {
-    name: Option<String>,
-    username: Option<String>,
-    url: Option<String>,
-    avatar: Option<String>,
-    repo: Option<Repo>,
+    pub name: Option<String>,
+    pub username: Option<String>,
+    pub url: Option<String>,
+    pub avatar: Option<String>,
+    pub repo: Option<Repo>,
 }
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
