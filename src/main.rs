@@ -1,9 +1,10 @@
+pub mod developers;
 pub mod repo;
 
 fn main() {
     let data = repo::repo();
-
-    println!("{:?}", data);
+    developers::developers();
+    // println!("{:?}", data);
 }
 
 // #[cfg(test)]
