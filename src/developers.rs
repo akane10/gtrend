@@ -109,7 +109,7 @@ fn select_data(html: &str) -> Vec<Developer> {
 }
 
 #[tokio::main]
-pub async fn developers() -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
+pub async fn get_data() -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
     let html = helpers::fetch_html(GITHUB_URL).await;
     let data: Vec<Developer> = match html {
         Ok(txt) => select_data(&txt),

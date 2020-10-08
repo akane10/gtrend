@@ -10,14 +10,14 @@ mod tests {
 
     #[test]
     fn get_repo() {
-        let data = repo::repo();
+        let data = repo::get_data();
 
         assert!(data.is_ok())
     }
 
     #[test]
     fn get_developers() {
-        let data = developers::developers();
+        let data = developers::get_data();
 
         assert!(data.is_ok());
     }
