@@ -1,6 +1,8 @@
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
 
+use crate::helpers;
+
 const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug)]
@@ -13,11 +15,6 @@ pub struct Repository {
     pub url: Option<String>,
     pub stars: Option<String>,
     pub forks: Option<String>,
-}
-
-async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let resp = reqwest::get(url).await?.text().await?;
-    Ok(resp)
 }
 
 fn select_data(html: &str) -> Vec<Repository> {
@@ -97,7 +94,7 @@ fn select_data(html: &str) -> Vec<Repository> {
 
 #[tokio::main]
 pub async fn repo() -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-    let html = fetch_html(GITHUB_URL).await;
+    let html = helpers::fetch_html(GITHUB_URL).await;
     let data: Vec<Repository> = match html {
         Ok(txt) => select_data(&txt),
         _ => {

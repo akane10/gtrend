@@ -19,10 +19,7 @@ pub struct Developer {
     pub repo: Option<Repo>,
 }
 
-async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let resp = reqwest::get(url).await?.text().await?;
-    Ok(resp)
-}
+use crate::helpers;
 
 fn select_data(html: &str) -> Vec<Developer> {
     let document = Document::from(html);
@@ -113,7 +110,7 @@ fn select_data(html: &str) -> Vec<Developer> {
 
 #[tokio::main]
 pub async fn developers() -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
-    let html = fetch_html(GITHUB_URL).await;
+    let html = helpers::fetch_html(GITHUB_URL).await;
     let data: Vec<Developer> = match html {
         Ok(txt) => select_data(&txt),
         _ => {
