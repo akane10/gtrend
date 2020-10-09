@@ -1,6 +1,8 @@
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
 
+use crate::gtrend::Since;
+// use crate::gtrend::Since::*;
 use crate::helpers;
 
 const GITHUB_URL: &str = "https://github.com/trending";
@@ -15,12 +17,6 @@ pub struct Repository {
     pub url: Option<String>,
     pub stars: Option<String>,
     pub forks: Option<String>,
-}
-
-pub enum Since {
-    Daily,
-    Weekly,
-    Monthly,
 }
 
 fn select_data(html: &str) -> Vec<Repository> {

@@ -1,4 +1,5 @@
 pub mod developers;
+pub mod gtrend;
 pub mod helpers;
 pub mod repo;
 // use crate::helpers;
@@ -6,11 +7,12 @@ pub mod repo;
 #[cfg(test)]
 mod tests {
     use crate::developers;
+    use crate::gtrend::Since;
     use crate::repo;
 
     #[test]
     fn get_repo() {
-        let since = repo::Since::Daily;
+        let since = Since::Daily;
         let data = repo::get_data(None, since);
 
         assert!(data.is_ok())
@@ -18,7 +20,7 @@ mod tests {
 
     #[test]
     fn get_repo_with_lang() {
-        let since = repo::Since::Daily;
+        let since = Since::Daily;
         let data = repo::get_data(Some("javascript"), since);
 
         assert!(data.is_ok())
