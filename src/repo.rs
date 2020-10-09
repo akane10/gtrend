@@ -17,35 +17,11 @@ pub struct Repository {
     pub forks: Option<String>,
 }
 
-// pub struct Repos {
-// since: String,
-// lang: String
-// }
-
-// impl Repos {
-// pub fn lang(mut self, lang: String) {
-// self.url = format!("/{}/{}", self.url, lang);
-// }
-// pub fn since(mut self, since: String) {
-// self.url = format!("{}?{}", self.url, since);
-// }
-// #[tokio::main]
-// pub async fn get_data(self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-// let base = String::from("https://github.com/trending");
-// let url = format!("{}/{}", base, self.url);
-
-// let html = helpers::fetch_html(&url).await;
-// let data: Vec<Repository> = match html {
-// Ok(txt) => select_data(&txt),
-// _ => {
-// println!("err");
-// Vec::new()
-// }
-// };
-// // println!("{:?}", data);
-// Ok(data)
-// }
-// }
+pub enum Since {
+    Daily,
+    Weekly,
+    Monthly,
+}
 
 fn select_data(html: &str) -> Vec<Repository> {
     let document = Document::from(html);
@@ -125,14 +101,19 @@ fn select_data(html: &str) -> Vec<Repository> {
 #[tokio::main]
 pub async fn get_data(
     lang: Option<&str>,
-    since: Option<&str>,
+    since: Since,
 ) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-    let url = match (lang, since) {
-        (Some(l), Some(s)) => format!("{}/{}?{}", GITHUB_URL, l, s),
-        (Some(l), None) => format!("{}/{}", GITHUB_URL, l),
-        (None, Some(s)) => format!("{}?{}", GITHUB_URL, s),
-        _ => format!("{}", GITHUB_URL),
+    let since = match since {
+        Since::Daily => "daily",
+        Since::Weekly => "weekly",
+        Since::Monthly => "monthly",
     };
+
+    let url = match lang {
+        Some(l) => format!("{}/{}?{}", GITHUB_URL, l, since),
+        _ => format!("{}?{}", GITHUB_URL, since),
+    };
+
     let html = helpers::fetch_html(&url).await;
     let data: Vec<Repository> = match html {
         Ok(txt) => select_data(&txt),
@@ -144,15 +125,3 @@ pub async fn get_data(
     // println!("{:?}", data);
     Ok(data)
 }
-
-// #[cfg(test)]
-// mod tests {
-// use super::*;
-
-// #[test]
-// fn get_repo() {
-// let data = Repos.get_data();
-
-// assert!(data.is_ok())
-// }
-// }
