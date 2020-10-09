@@ -98,6 +98,7 @@ fn select_data(html: &str) -> Vec<Repository> {
 pub async fn get_data(
     lang: Option<&str>,
     since: Since,
+    spoken_lang: Option<&str>,
 ) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
     let since = match since {
         Since::Daily => "daily",
@@ -105,9 +106,14 @@ pub async fn get_data(
         Since::Monthly => "monthly",
     };
 
-    let url = match lang {
-        Some(l) => format!("{}/{}?{}", GITHUB_URL, l, since),
-        _ => format!("{}?{}", GITHUB_URL, since),
+    let url = match (lang, spoken_lang) {
+        (Some(l), Some(sl)) => format!(
+            "{}/{}?since={}&spoken_language_code={}",
+            GITHUB_URL, l, since, sl
+        ),
+        (Some(l), None) => format!("{}/{}?since={}", GITHUB_URL, l, since),
+        (None, Some(sl)) => format!("{}?since={}&spoken_language_code={}", GITHUB_URL, since, sl),
+        _ => format!("{}?since={}", GITHUB_URL, since),
     };
 
     let html = helpers::fetch_html(&url).await;

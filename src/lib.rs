@@ -13,21 +13,21 @@ mod tests {
     const SINCE: Since = Since::Daily;
     #[test]
     fn get_repo() {
-        let data = repo::get_data(None, SINCE);
+        let data = repo::get_data(None, SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
     fn get_repo_with_lang() {
-        let data = repo::get_data(Some("rust"), SINCE);
+        let data = repo::get_data(Some("rust"), SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
     fn get_repo_with_unknown_lang() {
-        let data = repo::get_data(Some("unknown"), SINCE);
+        let data = repo::get_data(Some("unknown"), SINCE, None);
 
         assert!(data.is_ok())
     }
