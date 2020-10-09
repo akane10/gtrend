@@ -17,6 +17,36 @@ pub struct Repository {
     pub forks: Option<String>,
 }
 
+// pub struct Repos {
+// since: String,
+// lang: String
+// }
+
+// impl Repos {
+// pub fn lang(mut self, lang: String) {
+// self.url = format!("/{}/{}", self.url, lang);
+// }
+// pub fn since(mut self, since: String) {
+// self.url = format!("{}?{}", self.url, since);
+// }
+// #[tokio::main]
+// pub async fn get_data(self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
+// let base = String::from("https://github.com/trending");
+// let url = format!("{}/{}", base, self.url);
+
+// let html = helpers::fetch_html(&url).await;
+// let data: Vec<Repository> = match html {
+// Ok(txt) => select_data(&txt),
+// _ => {
+// println!("err");
+// Vec::new()
+// }
+// };
+// // println!("{:?}", data);
+// Ok(data)
+// }
+// }
+
 fn select_data(html: &str) -> Vec<Repository> {
     let document = Document::from(html);
     let mut vec: Vec<Repository> = Vec::new();
@@ -93,8 +123,17 @@ fn select_data(html: &str) -> Vec<Repository> {
 }
 
 #[tokio::main]
-pub async fn get_data() -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-    let html = helpers::fetch_html(GITHUB_URL).await;
+pub async fn get_data(
+    lang: Option<&str>,
+    since: Option<&str>,
+) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
+    let url = match (lang, since) {
+        (Some(l), Some(s)) => format!("{}/{}?{}", GITHUB_URL, l, s),
+        (Some(l), None) => format!("{}/{}", GITHUB_URL, l),
+        (None, Some(s)) => format!("{}?{}", GITHUB_URL, s),
+        _ => format!("{}", GITHUB_URL),
+    };
+    let html = helpers::fetch_html(&url).await;
     let data: Vec<Repository> = match html {
         Ok(txt) => select_data(&txt),
         _ => {
@@ -105,3 +144,15 @@ pub async fn get_data() -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
     // println!("{:?}", data);
     Ok(data)
 }
+
+// #[cfg(test)]
+// mod tests {
+// use super::*;
+
+// #[test]
+// fn get_repo() {
+// let data = Repos.get_data();
+
+// assert!(data.is_ok())
+// }
+// }
