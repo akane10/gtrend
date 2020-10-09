@@ -7,7 +7,7 @@ use crate::helpers;
 
 const GITHUB_URL: &str = "https://github.com/trending";
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Repository {
     pub author: Option<String>,
     pub name: Option<String>,

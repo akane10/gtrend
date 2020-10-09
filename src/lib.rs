@@ -19,6 +19,21 @@ mod tests {
     }
 
     #[test]
+    fn get_repo_author_should_always_some() {
+        let data = repo::get_data(None, SINCE, None).unwrap();
+
+        let y: Vec<_> = data
+            .clone()
+            .into_iter()
+            .filter(|x| x.author.is_some())
+            .collect();
+
+        let z = data.len();
+
+        assert_eq!(z, y.len())
+    }
+
+    #[test]
     fn get_repo_with_lang() {
         let data = repo::get_data(Some("rust"), SINCE, None);
 
