@@ -1,3 +1,4 @@
+use crate::gtrend::Since;
 use select::document::Document;
 use select::predicate::{Class, Name};
 
@@ -109,8 +110,22 @@ fn select_data(html: &str) -> Vec<Developer> {
 }
 
 #[tokio::main]
-pub async fn get_data() -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
-    let html = helpers::fetch_html(GITHUB_URL).await;
+pub async fn get_data(
+    lang: Option<&str>,
+    since: Since,
+) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
+    let since = match since {
+        Since::Daily => "daily",
+        Since::Weekly => "weekly",
+        Since::Monthly => "monthly",
+    };
+
+    let url = match lang {
+        Some(l) => format!("{}/{}?{}", GITHUB_URL, l, since),
+        _ => format!("{}?{}", GITHUB_URL, since),
+    };
+
+    let html = helpers::fetch_html(&url).await;
     let data: Vec<Developer> = match html {
         Ok(txt) => select_data(&txt),
         _ => {
