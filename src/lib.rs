@@ -24,12 +24,10 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.author.is_some())
+            .filter(|x| x.author.is_none())
             .collect();
 
-        let z = data.len();
-
-        assert_eq!(z, y.len())
+        assert!(y.is_empty())
     }
 
     #[test]
