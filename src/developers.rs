@@ -4,14 +4,14 @@ use select::predicate::{Class, Name};
 
 const GITHUB_URL: &str = "https://github.com/trending/developers";
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Repo {
     pub name: Option<String>,
     pub description: Option<String>,
     pub url: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Developer {
     pub name: Option<String>,
     pub username: Option<String>,
