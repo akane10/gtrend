@@ -8,6 +8,13 @@ use crate::helpers;
 const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug, Clone)]
+pub struct BuildBy {
+    pub username: Option<String>,
+    pub href: Option<String>,
+    pub avatar: Option<String>,
+}
+
+#[derive(Debug, Clone)]
 pub struct Repository {
     pub author: Option<String>,
     pub name: Option<String>,
@@ -17,6 +24,7 @@ pub struct Repository {
     pub url: Option<String>,
     pub stars: Option<String>,
     pub forks: Option<String>,
+    pub build_by: Vec<BuildBy>,
 }
 
 fn select_data(html: &str) -> Vec<Repository> {
@@ -72,7 +80,27 @@ fn select_data(html: &str) -> Vec<Repository> {
             .map(|x| escape(x.text()))
             .collect::<Vec<_>>();
 
-        // println!("x: {:?}", stars_forks);
+        let build_by: Vec<BuildBy> = node
+            .find(Class("avatar-user"))
+            .map(|x| {
+                let username: Option<String> = x.attr("alt").map(|val| {
+                    let u: Vec<&str> = val.split("@").collect();
+                    u[1].to_string()
+                });
+                let avatar = x.attr("src").map(|a| a.to_string());
+                let href = format!("{}/{}", "https://github.com", username.clone().unwrap());
+
+                let build_by = BuildBy {
+                    username: username,
+                    avatar: avatar,
+                    href: Some(href),
+                };
+
+                build_by
+            })
+            .collect::<Vec<_>>();
+
+        // println!("x: {:?}", build_by);
         let repo: Repository = Repository {
             author: match username_reponame.clone() {
                 Some(val) => Some(val.0),
@@ -88,6 +116,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             url: url,
             stars: Some(stars_forks[0].clone()),
             forks: Some(stars_forks[1].clone()),
+            build_by: build_by,
         };
         vec.push(repo);
     }

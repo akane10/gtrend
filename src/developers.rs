@@ -83,7 +83,7 @@ fn select_data(html: &str) -> Vec<Developer> {
             Some(u)
         });
 
-        println!("x: {:?}", repo_url);
+        // println!("x: {:?}", repo_url);
         let repo: Option<Repo> = match repo_name {
             Some(val) => {
                 let r = Repo {
@@ -133,6 +133,6 @@ pub async fn get_data(
             Vec::new()
         }
     };
-    println!("{:?}", data);
+    // println!("{:?}", data);
     Ok(data)
 }
