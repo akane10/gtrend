@@ -19,12 +19,12 @@ pub struct BuildBy {
 pub struct Repository {
     pub author: Option<String>,
     pub name: Option<String>,
-    pub current_star: Option<String>,
+    pub current_star: Option<i32>,
     pub description: Option<String>,
     pub programming_language: Option<String>,
     pub url: Option<String>,
-    pub stars: Option<String>,
-    pub forks: Option<String>,
+    pub stars: Option<i32>,
+    pub forks: Option<i32>,
     pub build_by: Vec<BuildBy>,
 }
 
@@ -54,10 +54,11 @@ fn select_data(html: &str) -> Vec<Repository> {
                 (y[1].to_string(), y[2].to_string())
             });
 
-        let current_star: Option<String> = node
-            .find(Class("float-sm-right"))
-            .next()
-            .and_then(|tag| Some(escape(tag.text())));
+        let current_star: Option<i32> = node.find(Class("float-sm-right")).next().and_then(|tag| {
+            let x = tag.text();
+            let s: Vec<_> = x.split_whitespace().collect();
+            Some(s[0].parse::<i32>().unwrap())
+        });
 
         let lang: Option<String> = node
             .find(Attr("itemprop", "programmingLanguage"))
@@ -76,9 +77,12 @@ fn select_data(html: &str) -> Vec<Repository> {
             username_reponame.clone().unwrap().1
         ));
 
-        let stars_forks: Vec<String> = node
+        let stars_forks: Vec<i32> = node
             .find(Class("muted-link"))
-            .map(|x| escape(x.text()))
+            .map(|x| {
+                let s = escape(x.text()).replace(",", "");
+                s.parse::<i32>().unwrap()
+            })
             .collect::<Vec<_>>();
 
         let build_by: Vec<BuildBy> = node
