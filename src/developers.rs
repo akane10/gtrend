@@ -1,17 +1,18 @@
 use crate::gtrend::Since;
 use select::document::Document;
 use select::predicate::{Class, Name};
+use serde::{Deserialize, Serialize};
 
 const GITHUB_URL: &str = "https://github.com/trending/developers";
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repo {
     pub name: Option<String>,
     pub description: Option<String>,
     pub url: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Developer {
     pub name: Option<String>,
     pub username: Option<String>,

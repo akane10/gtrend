@@ -4,17 +4,18 @@ use select::predicate::{Attr, Class, Name};
 use crate::gtrend::Since;
 // use crate::gtrend::Since::*;
 use crate::helpers;
+use serde::{Deserialize, Serialize};
 
 const GITHUB_URL: &str = "https://github.com/trending";
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuildBy {
     pub username: Option<String>,
     pub href: Option<String>,
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repository {
     pub author: Option<String>,
     pub name: Option<String>,
@@ -153,6 +154,16 @@ pub async fn get_data(
             Vec::new()
         }
     };
-    // println!("{:?}", data);
+
+    // let x: Vec<_> = data
+    // .clone()
+    // .into_iter()
+    // .map(|i| {
+    // let serialized = serde_json::to_string(&i).unwrap();
+    // println!("serialized = {}", serialized);
+    // serialized
+    // })
+    // .collect();
+    // println!("{:?}", x);
     Ok(data)
 }
