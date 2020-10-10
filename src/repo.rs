@@ -57,7 +57,7 @@ fn select_data(html: &str) -> Vec<Repository> {
         let current_star: Option<i32> = node.find(Class("float-sm-right")).next().and_then(|tag| {
             let x = tag.text();
             let s: Vec<_> = x.split_whitespace().collect();
-            Some(s[0].parse::<i32>().unwrap())
+            Some(s[0].replace(",", "").parse::<i32>().unwrap())
         });
 
         let lang: Option<String> = node
