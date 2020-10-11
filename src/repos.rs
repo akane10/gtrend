@@ -170,7 +170,7 @@ pub async fn get_data(
        .into_iter()
        .map(|i| {
            let serialized = serde_json::to_string(&i).unwrap();
-           println!("serialized = {}", serialized);
+           // println!("serialized = {}", serialized);
            serialized
        })
        .collect();
