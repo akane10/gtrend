@@ -159,15 +159,19 @@ pub async fn get_data(
         }
     };
 
-    // let x: Vec<_> = data
-    // .clone()
-    // .into_iter()
-    // .map(|i| {
-    // let serialized = serde_json::to_string(&i).unwrap();
-    // println!("serialized = {}", serialized);
-    // serialized
-    // })
-    // .collect();
     // println!("{:?}", x);
     Ok(data)
 }
+
+/*
+* to json example
+*
+     let x: Vec<_> = data
+       .into_iter()
+       .map(|i| {
+           let serialized = serde_json::to_string(&i).unwrap();
+           println!("serialized = {}", serialized);
+           serialized
+       })
+       .collect();
+* */
