@@ -12,9 +12,9 @@ gtrend = { git = "https://gitlab.com/akane10/gtrend", branch = "master" }
 
 ## Usage
 ```rust
-use crate::developers;
-use crate::gtrend::Since;
-use crate::repos;
+use gtrend::gtrend::Since;
+use gtrend::repos;
+use gtrend::developers;
 
 const SINCE: Since = Since::Daily;
 
