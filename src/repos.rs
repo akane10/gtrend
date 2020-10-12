@@ -27,6 +27,7 @@ pub struct Repository {
     pub url: Option<String>,
     pub stars: Option<i32>,
     pub forks: Option<i32>,
+    pub lang_color: Option<String>,
     pub build_by: Vec<BuildBy>,
 }
 
@@ -97,6 +98,12 @@ fn select_data(html: &str) -> Vec<Repository> {
             })
             .collect::<Vec<_>>();
 
+        let lang_color: Option<String> = node
+            .find(Class("repo-language-color"))
+            .next()
+            .and_then(|x| x.attr("style"))
+            .map(|x| x.replace("background-color: ", ""));
+
         let build_by: Vec<BuildBy> = node
             .find(Class("avatar-user"))
             .map(|x| {
@@ -122,7 +129,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             })
             .collect::<Vec<_>>();
 
-        // println!("x: {:?}", stars_forks);
+        // println!("x: {:?}", lang_color);
         let repo: Repository = Repository {
             avatar: username_reponame.clone().and_then(|x| match x.0 {
                 Some(val) => Some(format!("{}/{}.png", GITHUB_BASE, val)),
@@ -143,6 +150,7 @@ fn select_data(html: &str) -> Vec<Repository> {
                 _ => None,
             },
             build_by: build_by,
+            lang_color: lang_color,
         };
         vec.push(repo);
     }
