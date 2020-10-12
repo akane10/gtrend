@@ -21,12 +21,12 @@ pub struct Repository {
     pub avatar: Option<String>,
     pub author: Option<String>,
     pub name: Option<String>,
-    pub current_star: Option<i32>,
+    pub current_star: Option<u32>,
     pub description: Option<String>,
     pub programming_language: Option<String>,
     pub url: Option<String>,
-    pub stars: Option<i32>,
-    pub forks: Option<i32>,
+    pub stars: Option<u32>,
+    pub forks: Option<u32>,
     pub lang_color: Option<String>,
     pub built_by: Vec<BuiltBy>,
 }
@@ -65,10 +65,10 @@ fn select_data(html: &str) -> Vec<Repository> {
                 (username, reponame)
             });
 
-        let current_star: Option<i32> = node.find(Class("float-sm-right")).next().and_then(|tag| {
+        let current_star: Option<u32> = node.find(Class("float-sm-right")).next().and_then(|tag| {
             let x = tag.text();
             let s: Vec<_> = x.split_whitespace().collect();
-            Some(s[0].replace(",", "").parse::<i32>().unwrap())
+            Some(s[0].replace(",", "").parse::<u32>().unwrap())
         });
 
         let lang: Option<String> = node
@@ -90,11 +90,11 @@ fn select_data(html: &str) -> Vec<Repository> {
             str_
         });
 
-        let stars_forks: Vec<i32> = node
+        let stars_forks: Vec<u32> = node
             .find(Class("muted-link"))
             .map(|x| {
                 let s = escape(x.text()).replace(",", "");
-                s.parse::<i32>().unwrap()
+                s.parse::<u32>().unwrap()
             })
             .collect::<Vec<_>>();
 
