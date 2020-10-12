@@ -50,18 +50,28 @@ fn select_data(html: &str) -> Vec<Developer> {
             .next()
             .and_then(|x| x.find(Name("a")).next())
             .and_then(|x| x.attr("href"))
-            .map(|x| {
+            .and_then(|x| {
                 let y = x.split("/").collect::<Vec<_>>();
-                y[1].to_string()
+
+                if y.len() > 1 {
+                    Some(y[1].to_string())
+                } else {
+                    None
+                }
             });
 
         let avatar: Option<String> = node
             .find(Name("img"))
             .next()
             .and_then(|x| x.attr("src"))
-            .map(|x| {
+            .and_then(|x| {
                 let y = x.split("?").collect::<Vec<_>>();
-                y[0].to_string()
+
+                if y.len() > 0 {
+                    Some(y[0].to_string())
+                } else {
+                    None
+                }
             });
 
         let repo_name: Option<String> = node
@@ -69,11 +79,9 @@ fn select_data(html: &str) -> Vec<Developer> {
             .next()
             .and_then(|x| Some(escape(x.text())));
 
-        let url: Option<String> = Some(format!(
-            "{}/{}",
-            String::from("https://github.com"),
-            username.clone().unwrap(),
-        ));
+        let url: Option<String> = username
+            .clone()
+            .map(|x| format!("{}/{}", String::from("https://github.com"), x));
 
         let sponsor_url: Option<String> = node
             .find(Class("mr-2"))
