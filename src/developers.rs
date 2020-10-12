@@ -17,6 +17,7 @@ pub struct Developer {
     pub name: Option<String>,
     pub username: Option<String>,
     pub url: Option<String>,
+    pub sponsor_url: Option<String>,
     pub avatar: Option<String>,
     pub repo: Option<Repo>,
 }
@@ -74,6 +75,13 @@ fn select_data(html: &str) -> Vec<Developer> {
             username.clone().unwrap(),
         ));
 
+        let sponsor_url: Option<String> = node
+            .find(Class("mr-2"))
+            .next()
+            .and_then(|x| x.find(Name("a")).next())
+            .and_then(|x| x.attr("href"))
+            .map(|x| format!("{}{}", "https://github.com", x));
+
         let repo_description: Option<String> = node
             .find(Class("mt-1"))
             .next()
@@ -84,7 +92,7 @@ fn select_data(html: &str) -> Vec<Developer> {
             Some(u)
         });
 
-        // println!("x: {:?}", repo_url);
+        // println!("x: {:?}", sponsor_url);
         let repo: Option<Repo> = match repo_name {
             Some(val) => {
                 let r = Repo {
@@ -101,6 +109,7 @@ fn select_data(html: &str) -> Vec<Developer> {
             name: name,
             username: username,
             url: url,
+            sponsor_url: sponsor_url,
             avatar: avatar,
             repo: repo,
         };
