@@ -6,6 +6,7 @@ use crate::gtrend::Since;
 use crate::helpers;
 use serde::{Deserialize, Serialize};
 
+const GITHUB_BASE: &str = "https://github.com";
 const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,6 +18,7 @@ pub struct BuildBy {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repository {
+    pub avatar: Option<String>,
     pub author: Option<String>,
     pub name: Option<String>,
     pub current_star: Option<i32>,
@@ -79,7 +81,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             .and_then(|x| Some(escape(x.text())));
 
         let url: Option<String> = username_reponame.clone().and_then(|x| {
-            let github = String::from("https://github.com");
+            let github = String::from(GITHUB_BASE);
             let str_ = match (x.0, x.1) {
                 (Some(u), Some(r)) => Some(format!("{}/{}/{}", github, u, r)),
                 _ => None,
@@ -108,9 +110,7 @@ fn select_data(html: &str) -> Vec<Repository> {
                     }
                 });
                 let avatar = x.attr("src").map(|a| a.to_string());
-                let href = username
-                    .clone()
-                    .map(|x| format!("{}/{}", "https://github.com", x));
+                let href = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
 
                 let build_by = BuildBy {
                     username: username,
@@ -124,6 +124,10 @@ fn select_data(html: &str) -> Vec<Repository> {
 
         // println!("x: {:?}", stars_forks);
         let repo: Repository = Repository {
+            avatar: username_reponame.clone().and_then(|x| match x.0 {
+                Some(val) => Some(format!("{}/{}.png", GITHUB_BASE, val)),
+                _ => None,
+            }),
             author: username_reponame.clone().and_then(|x| x.0),
             name: username_reponame.clone().and_then(|x| x.1),
             current_star: current_star,
