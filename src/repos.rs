@@ -105,7 +105,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             })
             .collect::<Vec<_>>();
 
-        // println!("x: {:?}", build_by);
+        println!("x: {:?}", stars_forks);
         let repo: Repository = Repository {
             author: match username_reponame.clone() {
                 Some(val) => Some(val.0),
@@ -119,8 +119,14 @@ fn select_data(html: &str) -> Vec<Repository> {
             programming_language: lang,
             description: desc,
             url: url,
-            stars: Some(stars_forks[0].clone()),
-            forks: Some(stars_forks[1].clone()),
+            stars: match stars_forks.len() {
+                n if n > 0 => Some(stars_forks[0].clone()),
+                _ => None,
+            },
+            forks: match stars_forks.len() {
+                n if n > 1 => Some(stars_forks[1].clone()),
+                _ => None,
+            },
             build_by: build_by,
         };
         vec.push(repo);

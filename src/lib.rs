@@ -38,6 +38,13 @@ mod tests {
     }
 
     #[test]
+    fn get_repo_with_lang_and_spoken_lang() {
+        let data = repos::get_data(Some("haskell".to_string()), SINCE, Some("en".to_string()));
+
+        assert!(data.is_ok())
+    }
+
+    #[test]
     fn get_repo_with_unknown_lang() {
         let data = repos::get_data(Some("unknown".to_string()), SINCE, None);
 
