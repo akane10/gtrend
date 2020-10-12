@@ -44,14 +44,22 @@ fn select_data(html: &str) -> Vec<Repository> {
                 })
         };
 
-        let username_reponame: Option<(String, String)> = node
+        let username_reponame: Option<(Option<String>, Option<String>)> = node
             .find(Name("h1"))
             .next()
             .and_then(|x| x.find(Name("a")).next())
             .and_then(|x| x.attr("href"))
             .map(|x| {
                 let y = x.split("/").collect::<Vec<_>>();
-                (y[1].to_string(), y[2].to_string())
+                let username = match y.len() {
+                    n if n > 1 => Some(y[1].to_string()),
+                    _ => None,
+                };
+                let reponame = match y.len() {
+                    n if n > 2 => Some(y[2].to_string()),
+                    _ => None,
+                };
+                (username, reponame)
             });
 
         let current_star: Option<i32> = node.find(Class("float-sm-right")).next().and_then(|tag| {
@@ -70,12 +78,14 @@ fn select_data(html: &str) -> Vec<Repository> {
             .next()
             .and_then(|x| Some(escape(x.text())));
 
-        let url: Option<String> = Some(format!(
-            "{}/{}/{}",
-            String::from("https://github.com"),
-            username_reponame.clone().unwrap().0,
-            username_reponame.clone().unwrap().1
-        ));
+        let url: Option<String> = username_reponame.clone().and_then(|x| {
+            let github = String::from("https://github.com");
+            let str_ = match (x.0, x.1) {
+                (Some(u), Some(r)) => Some(format!("{}/{}/{}", github, u, r)),
+                _ => None,
+            };
+            str_
+        });
 
         let stars_forks: Vec<i32> = node
             .find(Class("muted-link"))
@@ -88,17 +98,24 @@ fn select_data(html: &str) -> Vec<Repository> {
         let build_by: Vec<BuildBy> = node
             .find(Class("avatar-user"))
             .map(|x| {
-                let username: Option<String> = x.attr("alt").map(|val| {
+                let username: Option<String> = x.attr("alt").and_then(|val| {
                     let u: Vec<&str> = val.split("@").collect();
-                    u[1].to_string()
+
+                    if u.len() > 1 {
+                        Some(u[1].to_string())
+                    } else {
+                        None
+                    }
                 });
                 let avatar = x.attr("src").map(|a| a.to_string());
-                let href = format!("{}/{}", "https://github.com", username.clone().unwrap());
+                let href = username
+                    .clone()
+                    .map(|x| format!("{}/{}", "https://github.com", x));
 
                 let build_by = BuildBy {
                     username: username,
                     avatar: avatar,
-                    href: Some(href),
+                    href: href,
                 };
 
                 build_by
@@ -107,14 +124,8 @@ fn select_data(html: &str) -> Vec<Repository> {
 
         // println!("x: {:?}", stars_forks);
         let repo: Repository = Repository {
-            author: match username_reponame.clone() {
-                Some(val) => Some(val.0),
-                _ => None,
-            },
-            name: match username_reponame.clone() {
-                Some(val) => Some(val.1),
-                _ => None,
-            },
+            author: username_reponame.clone().and_then(|x| x.0),
+            name: username_reponame.clone().and_then(|x| x.1),
             current_star: current_star,
             programming_language: lang,
             description: desc,
