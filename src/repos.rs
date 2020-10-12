@@ -10,7 +10,7 @@ const GITHUB_BASE: &str = "https://github.com";
 const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BuildBy {
+pub struct BuiltBy {
     pub username: Option<String>,
     pub href: Option<String>,
     pub avatar: Option<String>,
@@ -28,7 +28,7 @@ pub struct Repository {
     pub stars: Option<i32>,
     pub forks: Option<i32>,
     pub lang_color: Option<String>,
-    pub build_by: Vec<BuildBy>,
+    pub built_by: Vec<BuiltBy>,
 }
 
 fn select_data(html: &str) -> Vec<Repository> {
@@ -104,7 +104,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             .and_then(|x| x.attr("style"))
             .map(|x| x.replace("background-color: ", ""));
 
-        let build_by: Vec<BuildBy> = node
+        let built_by: Vec<BuiltBy> = node
             .find(Class("avatar-user"))
             .map(|x| {
                 let username: Option<String> = x.attr("alt").and_then(|val| {
@@ -127,13 +127,13 @@ fn select_data(html: &str) -> Vec<Repository> {
                 });
                 let href = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
 
-                let build_by = BuildBy {
+                let built_by = BuiltBy {
                     username: username,
                     avatar: avatar,
                     href: href,
                 };
 
-                build_by
+                built_by
             })
             .collect::<Vec<_>>();
 
@@ -157,7 +157,7 @@ fn select_data(html: &str) -> Vec<Repository> {
                 n if n > 1 => Some(stars_forks[1].clone()),
                 _ => None,
             },
-            build_by: build_by,
+            built_by: built_by,
             lang_color: lang_color,
         };
         vec.push(repo);
