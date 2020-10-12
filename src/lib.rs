@@ -32,14 +32,14 @@ mod tests {
 
     #[test]
     fn get_repo_with_lang() {
-        let data = repos::get_data(Some("rust"), SINCE, None);
+        let data = repos::get_data(Some("rust".to_string()), SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
     fn get_repo_with_unknown_lang() {
-        let data = repos::get_data(Some("unknown"), SINCE, None);
+        let data = repos::get_data(Some("unknown".to_string()), SINCE, None);
 
         assert!(data.is_ok())
     }
@@ -53,14 +53,14 @@ mod tests {
 
     #[test]
     fn get_developers_with_lang() {
-        let data = developers::get_data(Some("rust"), SINCE);
+        let data = developers::get_data(Some("rust".to_string()), SINCE);
 
         assert!(data.is_ok());
     }
 
     #[test]
     fn get_developers_with_unknown_lang() {
-        let data = developers::get_data(Some("unknown"), SINCE);
+        let data = developers::get_data(Some("unknown".to_string()), SINCE);
 
         assert!(data.is_ok())
     }

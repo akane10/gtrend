@@ -112,7 +112,7 @@ fn select_data(html: &str) -> Vec<Developer> {
 
 #[tokio::main]
 pub async fn get_data(
-    lang: Option<&str>,
+    lang: Option<String>,
     since: Since,
 ) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
     let since = match since {

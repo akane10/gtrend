@@ -130,9 +130,9 @@ fn select_data(html: &str) -> Vec<Repository> {
 
 #[tokio::main]
 pub async fn get_data(
-    lang: Option<&str>,
+    lang: Option<String>,
     since: Since,
-    spoken_lang: Option<&str>,
+    spoken_lang: Option<String>,
 ) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
     let since = match since {
         Since::Daily => "daily",
