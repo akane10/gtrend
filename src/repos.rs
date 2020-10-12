@@ -105,7 +105,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             })
             .collect::<Vec<_>>();
 
-        println!("x: {:?}", stars_forks);
+        // println!("x: {:?}", stars_forks);
         let repo: Repository = Repository {
             author: match username_reponame.clone() {
                 Some(val) => Some(val.0),
