@@ -116,7 +116,15 @@ fn select_data(html: &str) -> Vec<Repository> {
                         None
                     }
                 });
-                let avatar = x.attr("src").map(|a| a.to_string());
+                let avatar = x.attr("src").and_then(|a| {
+                    let ss: Vec<&str> = a.split("?").collect();
+
+                    if ss.len() > 0 {
+                        Some(ss[0].to_string())
+                    } else {
+                        None
+                    }
+                });
                 let href = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
 
                 let build_by = BuildBy {
@@ -129,7 +137,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             })
             .collect::<Vec<_>>();
 
-        // println!("x: {:?}", lang_color);
+        // println!("x: {:?}", build_by);
         let repo: Repository = Repository {
             avatar: username_reponame.clone().and_then(|x| match x.0 {
                 Some(val) => Some(format!("{}/{}.png", GITHUB_BASE, val)),
