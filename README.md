@@ -19,8 +19,8 @@ use crate::repos;
 const SINCE: Since = Since::Daily;
 
 fn main(){
-    let programming_language = String::new("rust");
-    let spoken_language = String::new("en");
+    let programming_language = String::from("rust");
+    let spoken_language = String::from("en");
     
     let repos_data = repos::get_data(
                         Some(programming_language), // or None
@@ -43,7 +43,6 @@ fn main(){
        .collect();
 
     println!("repos_data_json {:?}", repos_data_json);
-}
 }
 ```
 
