@@ -3,6 +3,7 @@ use select::document::Document;
 use select::predicate::{Class, Name};
 use serde::{Deserialize, Serialize};
 
+const GITHUB_BASE: &str = "https://github.com";
 const GITHUB_URL: &str = "https://github.com/trending/developers";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -79,16 +80,14 @@ fn select_data(html: &str) -> Vec<Developer> {
             .next()
             .and_then(|x| Some(escape(x.text())));
 
-        let url: Option<String> = username
-            .clone()
-            .map(|x| format!("{}/{}", String::from("https://github.com"), x));
+        let url: Option<String> = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
 
         let sponsor_url: Option<String> = node
             .find(Class("mr-2"))
             .next()
             .and_then(|x| x.find(Name("a")).next())
             .and_then(|x| x.attr("href"))
-            .map(|x| format!("{}{}", "https://github.com", x));
+            .map(|x| format!("{}{}", GITHUB_BASE, x));
 
         let repo_description: Option<String> = node
             .find(Class("mt-1"))
