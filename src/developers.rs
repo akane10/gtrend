@@ -28,94 +28,96 @@ impl Developer {
 
 fn select_data(html: &str) -> Vec<Developer> {
     let document = Document::from(html);
-    let mut vec: Vec<Developer> = Vec::new();
 
-    for node in document.clone().find(Class("Box-row")) {
-        let escape = |str_: String| -> String {
-            str_.split_ascii_whitespace()
-                .fold(String::new(), |acc, val| {
-                    if acc.is_empty() {
-                        val.to_string()
+    let data: Vec<Developer> = document
+        .find(Class("Box-row"))
+        .into_iter()
+        .map(|node| {
+            let escape = |str_: String| -> String {
+                str_.split_ascii_whitespace()
+                    .fold(String::new(), |acc, val| {
+                        if acc.is_empty() {
+                            val.to_string()
+                        } else {
+                            format!("{} {}", acc, val)
+                        }
+                    })
+            };
+
+            let name: Option<String> = node
+                .find(Class("lh-condensed"))
+                .next()
+                .map(|x| escape(x.text()));
+
+            let username: Option<String> = node
+                .find(Class("lh-condensed"))
+                .next()
+                .and_then(|x| x.find(Name("a")).next())
+                .and_then(|x| x.attr("href"))
+                .and_then(|x| {
+                    let y = x.split("/").collect::<Vec<_>>();
+
+                    if y.len() > 1 {
+                        Some(y[1].to_string())
                     } else {
-                        format!("{} {}", acc, val)
+                        None
                     }
-                })
-        };
+                });
 
-        let name: Option<String> = node
-            .find(Class("lh-condensed"))
-            .next()
-            .map(|x| escape(x.text()));
+            let avatar: Option<String> = node
+                .find(Name("img"))
+                .next()
+                .and_then(|x| x.attr("src"))
+                .and_then(|x| {
+                    let y = x.split("?").collect::<Vec<_>>();
 
-        let username: Option<String> = node
-            .find(Class("lh-condensed"))
-            .next()
-            .and_then(|x| x.find(Name("a")).next())
-            .and_then(|x| x.attr("href"))
-            .and_then(|x| {
-                let y = x.split("/").collect::<Vec<_>>();
+                    if y.len() > 0 {
+                        Some(y[0].to_string())
+                    } else {
+                        None
+                    }
+                });
 
-                if y.len() > 1 {
-                    Some(y[1].to_string())
-                } else {
-                    None
-                }
+            let repo_name: Option<String> = node.find(Class("h4")).next().map(|x| escape(x.text()));
+
+            let url: Option<String> = username
+                .clone()
+                .map(|x| format!("{}/{}", GITHUB_BASE_URL, x));
+
+            let sponsor_url: Option<String> = node
+                .find(Class("mr-2"))
+                .next()
+                .and_then(|x| x.find(Name("a")).next())
+                .and_then(|x| x.attr("href"))
+                .map(|x| format!("{}{}", GITHUB_BASE_URL, x));
+
+            let repo_description: Option<String> =
+                node.find(Class("mt-1")).next().map(|x| escape(x.text()));
+
+            let repo_url: Option<String> = repo_name
+                .clone()
+                .and_then(|x| url.clone().map(|y| format!("{}/{}", y, x)));
+
+            let repo: Option<Repo> = repo_name.map(|x| Repo {
+                name: Some(x),
+                description: repo_description.clone(),
+                url: repo_url.clone(),
             });
 
-        let avatar: Option<String> = node
-            .find(Name("img"))
-            .next()
-            .and_then(|x| x.attr("src"))
-            .and_then(|x| {
-                let y = x.split("?").collect::<Vec<_>>();
+            // println!("x {:?}", repo_url);
 
-                if y.len() > 0 {
-                    Some(y[0].to_string())
-                } else {
-                    None
-                }
-            });
+            return Developer {
+                name: name,
+                username: username,
+                url: url,
+                sponsor_url: sponsor_url,
+                avatar: avatar,
+                repo: repo,
+            };
+        })
+        .collect();
 
-        let repo_name: Option<String> = node.find(Class("h4")).next().map(|x| escape(x.text()));
-
-        let url: Option<String> = username
-            .clone()
-            .map(|x| format!("{}/{}", GITHUB_BASE_URL, x));
-
-        let sponsor_url: Option<String> = node
-            .find(Class("mr-2"))
-            .next()
-            .and_then(|x| x.find(Name("a")).next())
-            .and_then(|x| x.attr("href"))
-            .map(|x| format!("{}{}", GITHUB_BASE_URL, x));
-
-        let repo_description: Option<String> =
-            node.find(Class("mt-1")).next().map(|x| escape(x.text()));
-
-        let repo_url: Option<String> = repo_name
-            .clone()
-            .and_then(|x| url.clone().map(|y| format!("{}/{}", y, x)));
-
-        let repo: Option<Repo> = repo_name.map(|x| Repo {
-            name: Some(x),
-            description: repo_description.clone(),
-            url: repo_url.clone(),
-        });
-
-        // println!("x {:?}", repo_url);
-
-        let dev: Developer = Developer {
-            name: name,
-            username: username,
-            url: url,
-            sponsor_url: sponsor_url,
-            avatar: avatar,
-            repo: repo,
-        };
-
-        vec.push(dev);
-    }
-    vec
+    data
 }
 
 #[tokio::main]
@@ -138,6 +140,7 @@ pub async fn get_data(
             Vec::new()
         }
     };
-    // println!("{:?}", data);
+
+    // println!("data result {:?}", data);
     Ok(data)
 }
