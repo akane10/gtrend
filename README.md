@@ -1,18 +1,22 @@
 # gtrend
+
 inspired by [github-trending-api](https://github.com/huchenme/github-trending-api).
 scraping through [github/trending](https://github.com/trending).
 for REST API see [gtrend-api](https://gitlab.com/akane10/gtrend-api)
 
 ## Installation
+
 Cargo.toml
+
 ```
 [dependencies]
 gtrend = { git = "https://gitlab.com/akane10/gtrend", branch = "master" }
 ```
 
 ## Usage
+
 ```rust
-use gtrend::gtrend::Since;
+use gtrend::Since;
 use gtrend::repos;
 use gtrend::developers;
 
@@ -21,7 +25,7 @@ const SINCE: Since = Since::Daily;
 fn main(){
     let programming_language = String::from("rust");
     let spoken_language = String::from("en");
-    
+
     let since_str: &str = SINCE.to_str();
     println!("{}", since_str);
 
@@ -30,15 +34,15 @@ fn main(){
 
     let repos_data = repos::get_data(
                         Some(programming_language), // or None
-                        SINCE, 
+                        SINCE,
                         Some(spoken_language) // or None
                     );
-    
+
     let dev_data = developers::get_data(Some(programming_language), SINCE);
-    
+
     println!("repos_data {:?}", repos_data.unwrap());
     println!("dev_data {:?}", dev_data.unwrap());
-    
+
     let repos_data_json: Vec<_> = repos_data.unwrap()
        .into_iter()
        .map(|repo| {
