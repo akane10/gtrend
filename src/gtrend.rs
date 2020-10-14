@@ -6,7 +6,7 @@ pub enum Since {
 }
 
 impl Since {
-    pub fn to_string(&self) -> &str {
+    pub fn to_str(&self) -> &str {
         match self {
             Self::Daily => "daily",
             Self::Weekly => "weekly",
@@ -14,7 +14,7 @@ impl Since {
         }
     }
 
-    pub fn from_string(s: &str) -> Self {
+    pub fn from_str(s: &str) -> Self {
         match s {
             "daily" => Self::Daily,
             "weekly" => Self::Weekly,
@@ -30,13 +30,13 @@ mod tests {
 
     #[test]
     fn test_since_to_string() {
-        let x: &str = Since::Daily.to_string();
+        let x: &str = Since::Daily.to_str();
         assert_eq!(x, "daily");
     }
 
     #[test]
     fn test_since_from_string() {
-        let x: Since = Since::from_string("daily");
+        let x: Since = Since::from_str("daily");
         assert_eq!(x, Since::Daily);
     }
 }
