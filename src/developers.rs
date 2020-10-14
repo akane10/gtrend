@@ -44,7 +44,7 @@ fn select_data(html: &str) -> Vec<Developer> {
         let name: Option<String> = node
             .find(Class("lh-condensed"))
             .next()
-            .and_then(|x| Some(escape(x.text())));
+            .map(|x| escape(x.text()));
 
         let username: Option<String> = node
             .find(Class("lh-condensed"))
@@ -75,10 +75,7 @@ fn select_data(html: &str) -> Vec<Developer> {
                 }
             });
 
-        let repo_name: Option<String> = node
-            .find(Class("h4"))
-            .next()
-            .and_then(|x| Some(escape(x.text())));
+        let repo_name: Option<String> = node.find(Class("h4")).next().map(|x| escape(x.text()));
 
         let url: Option<String> = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
 
@@ -89,28 +86,20 @@ fn select_data(html: &str) -> Vec<Developer> {
             .and_then(|x| x.attr("href"))
             .map(|x| format!("{}{}", GITHUB_BASE, x));
 
-        let repo_description: Option<String> = node
-            .find(Class("mt-1"))
-            .next()
-            .and_then(|x| Some(escape(x.text())));
+        let repo_description: Option<String> =
+            node.find(Class("mt-1")).next().map(|x| escape(x.text()));
 
-        let repo_url: Option<String> = repo_name.clone().and_then(|x| {
-            let u = format!("{}/{}", url.clone().unwrap(), x);
-            Some(u)
+        let repo_url: Option<String> = repo_name
+            .clone()
+            .and_then(|x| url.clone().map(|y| format!("{}/{}", y, x)));
+
+        let repo: Option<Repo> = repo_name.map(|x| Repo {
+            name: Some(x),
+            description: repo_description.clone(),
+            url: repo_url.clone(),
         });
 
-        // println!("x: {:?}", sponsor_url);
-        let repo: Option<Repo> = match repo_name {
-            Some(val) => {
-                let r = Repo {
-                    name: Some(val),
-                    description: repo_description.clone(),
-                    url: repo_url.clone(),
-                };
-                Some(r)
-            }
-            _ => None,
-        };
+        println!("x {:?}", repo_url);
 
         let dev: Developer = Developer {
             name: name,
