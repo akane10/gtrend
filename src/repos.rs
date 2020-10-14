@@ -84,9 +84,9 @@ fn select_data(html: &str) -> Vec<Repository> {
                 .next()
                 .and_then(|x| Some(escape(x.text())));
 
-            let url: Option<String> = username_reponame.clone().and_then(|x| {
+            let url: Option<String> = username_reponame.clone().and_then(|(username, reponame)| {
                 let github = String::from(GITHUB_BASE_URL);
-                let str_ = match (x.0, x.1) {
+                let str_ = match (username, reponame) {
                     (Some(u), Some(r)) => Some(format!("{}/{}/{}", github, u, r)),
                     _ => None,
                 };
@@ -144,12 +144,11 @@ fn select_data(html: &str) -> Vec<Repository> {
 
             // println!("x: {:?}", build_by);
             return Repository {
-                avatar: username_reponame.clone().and_then(|x| match x.0 {
-                    Some(val) => Some(format!("{}/{}.png", GITHUB_BASE_URL, val)),
-                    _ => None,
+                avatar: username_reponame.clone().and_then(|(username, _)| {
+                    username.map(|x| format!("{}/{}.png", GITHUB_BASE_URL, x))
                 }),
-                author: username_reponame.clone().and_then(|x| x.0),
-                name: username_reponame.clone().and_then(|x| x.1),
+                author: username_reponame.clone().and_then(|(username, _)| username),
+                name: username_reponame.clone().and_then(|(_, reponame)| reponame),
                 current_star: current_star,
                 programming_language: lang,
                 description: desc,
