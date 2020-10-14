@@ -1,7 +1,7 @@
 # gtrend
 inspired by [github-trending-api](https://github.com/huchenme/github-trending-api).
 scraping through [github/trending](https://github.com/trending).
-for api see [gtrend-api](https://gitlab.com/akane10/gtrend-api)
+for REST API see [gtrend-api](https://gitlab.com/akane10/gtrend-api)
 
 ## Installation
 Cargo.toml
