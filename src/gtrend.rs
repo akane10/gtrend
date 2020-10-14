@@ -37,6 +37,7 @@ mod tests {
     #[test]
     fn test_since_from_string() {
         let x: Since = Since::from_str("daily");
+        println!("Display Since: {:?}", x);
         assert_eq!(x, Since::Daily);
     }
 }

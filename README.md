@@ -22,6 +22,12 @@ fn main(){
     let programming_language = String::from("rust");
     let spoken_language = String::from("en");
     
+    let since_str: &str = SINCE.to_str();
+    println!("{}", since_str);
+
+    let since_from_str: Since = Since::from_str("weekly");
+    println!("{:?}", since_from_str);
+
     let repos_data = repos::get_data(
                         Some(programming_language), // or None
                         SINCE, 
