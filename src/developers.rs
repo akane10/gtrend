@@ -99,7 +99,7 @@ fn select_data(html: &str) -> Vec<Developer> {
             url: repo_url.clone(),
         });
 
-        println!("x {:?}", repo_url);
+        // println!("x {:?}", repo_url);
 
         let dev: Developer = Developer {
             name: name,
