@@ -171,11 +171,7 @@ pub async fn get_data(
     since: Since,
     spoken_lang: Option<String>,
 ) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-    let since = match since {
-        Since::Daily => "daily",
-        Since::Weekly => "weekly",
-        Since::Monthly => "monthly",
-    };
+    let since = since.to_str();
 
     let url = match (lang, spoken_lang) {
         (Some(l), Some(sl)) => format!(

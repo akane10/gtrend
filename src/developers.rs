@@ -120,11 +120,7 @@ pub async fn get_data(
     lang: Option<String>,
     since: Since,
 ) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
-    let since = match since {
-        Since::Daily => "daily",
-        Since::Weekly => "weekly",
-        Since::Monthly => "monthly",
-    };
+    let since = since.to_str();
 
     let url = match lang {
         Some(l) => format!("{}/{}?{}", GITHUB_URL, l, since),
