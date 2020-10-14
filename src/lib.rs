@@ -1,13 +1,73 @@
 pub mod developers;
-pub mod gtrend;
-pub mod helpers;
 pub mod repos;
+
+const GITHUB_BASE_URL: &str = "https://github.com";
+const GITHUB_TRENDING_URL: &str = "https://github.com/trending";
+
+pub async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let resp = reqwest::get(url).await?.text().await?;
+    Ok(resp)
+}
+
+#[derive(PartialEq, Debug)]
+pub enum Since {
+    Daily,
+    Weekly,
+    Monthly,
+}
+
+impl Since {
+    pub fn to_str(&self) -> &str {
+        match self {
+            Self::Daily => "daily",
+            Self::Weekly => "weekly",
+            Self::Monthly => "monthly",
+        }
+    }
+
+    pub fn from_str(s: &str) -> Self {
+        match s {
+            "daily" => Self::Daily,
+            "weekly" => Self::Weekly,
+            "monthly" => Self::Monthly,
+            _ => Self::Daily,
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use crate::developers;
-    use crate::gtrend::Since;
     use crate::repos;
+    use crate::Since;
+
+    #[tokio::test]
+    async fn test_fetch_html_github_repo() {
+        let github_url: &str = "https://github.com/trending";
+        let html = fetch_html(github_url).await;
+        assert!(html.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_fetch_html_github_developers() {
+        let github_url: &str = "https://github.com/trending/developers";
+        let html = fetch_html(github_url).await;
+        assert!(html.is_ok());
+    }
+
+    #[test]
+    fn test_since_to_string() {
+        let x: &str = Since::Daily.to_str();
+        assert_eq!(x, "daily");
+    }
+
+    #[test]
+    fn test_since_from_string() {
+        let x: Since = Since::from_str("daily");
+        println!("Display Since: {:?}", x);
+        assert_eq!(x, Since::Daily);
+    }
 
     const SINCE: Since = Since::Daily;
     #[test]

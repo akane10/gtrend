@@ -1,13 +1,7 @@
+use crate::{fetch_html, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
-
-use crate::gtrend::Since;
-// use crate::gtrend::Since::*;
-use crate::helpers;
 use serde::{Deserialize, Serialize};
-
-const GITHUB_BASE: &str = "https://github.com";
-const GITHUB_URL: &str = "https://github.com/trending";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuiltBy {
@@ -29,6 +23,12 @@ pub struct Repository {
     pub forks: Option<u32>,
     pub lang_color: Option<String>,
     pub built_by: Vec<BuiltBy>,
+}
+
+impl Repository {
+    pub fn json_stringify(&self) -> serde_json::Result<String> {
+        serde_json::to_string(self)
+    }
 }
 
 fn select_data(html: &str) -> Vec<Repository> {
@@ -82,7 +82,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             .and_then(|x| Some(escape(x.text())));
 
         let url: Option<String> = username_reponame.clone().and_then(|x| {
-            let github = String::from(GITHUB_BASE);
+            let github = String::from(GITHUB_BASE_URL);
             let str_ = match (x.0, x.1) {
                 (Some(u), Some(r)) => Some(format!("{}/{}/{}", github, u, r)),
                 _ => None,
@@ -125,7 +125,9 @@ fn select_data(html: &str) -> Vec<Repository> {
                         None
                     }
                 });
-                let href = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
+                let href = username
+                    .clone()
+                    .map(|x| format!("{}/{}", GITHUB_BASE_URL, x));
 
                 let built_by = BuiltBy {
                     username: username,
@@ -140,7 +142,7 @@ fn select_data(html: &str) -> Vec<Repository> {
         // println!("x: {:?}", build_by);
         let repo: Repository = Repository {
             avatar: username_reponame.clone().and_then(|x| match x.0 {
-                Some(val) => Some(format!("{}/{}.png", GITHUB_BASE, val)),
+                Some(val) => Some(format!("{}/{}.png", GITHUB_BASE_URL, val)),
                 _ => None,
             }),
             author: username_reponame.clone().and_then(|x| x.0),
@@ -176,14 +178,17 @@ pub async fn get_data(
     let url = match (lang, spoken_lang) {
         (Some(l), Some(sl)) => format!(
             "{}/{}?since={}&spoken_language_code={}",
-            GITHUB_URL, l, since, sl
+            GITHUB_TRENDING_URL, l, since, sl
         ),
-        (Some(l), None) => format!("{}/{}?since={}", GITHUB_URL, l, since),
-        (None, Some(sl)) => format!("{}?since={}&spoken_language_code={}", GITHUB_URL, since, sl),
-        _ => format!("{}?since={}", GITHUB_URL, since),
+        (Some(l), None) => format!("{}/{}?since={}", GITHUB_TRENDING_URL, l, since),
+        (None, Some(sl)) => format!(
+            "{}?since={}&spoken_language_code={}",
+            GITHUB_TRENDING_URL, since, sl
+        ),
+        _ => format!("{}?since={}", GITHUB_TRENDING_URL, since),
     };
 
-    let html = helpers::fetch_html(&url).await;
+    let html = fetch_html(&url).await;
     let data: Vec<Repository> = match html {
         Ok(txt) => select_data(&txt),
         _ => {

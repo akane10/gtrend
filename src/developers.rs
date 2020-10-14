@@ -1,10 +1,7 @@
-use crate::gtrend::Since;
+use crate::{fetch_html, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
 use select::document::Document;
 use select::predicate::{Class, Name};
 use serde::{Deserialize, Serialize};
-
-const GITHUB_BASE: &str = "https://github.com";
-const GITHUB_URL: &str = "https://github.com/trending/developers";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repo {
@@ -23,7 +20,11 @@ pub struct Developer {
     pub repo: Option<Repo>,
 }
 
-use crate::helpers;
+impl Developer {
+    pub fn json_stringify(&self) -> serde_json::Result<String> {
+        serde_json::to_string(self)
+    }
+}
 
 fn select_data(html: &str) -> Vec<Developer> {
     let document = Document::from(html);
@@ -77,14 +78,16 @@ fn select_data(html: &str) -> Vec<Developer> {
 
         let repo_name: Option<String> = node.find(Class("h4")).next().map(|x| escape(x.text()));
 
-        let url: Option<String> = username.clone().map(|x| format!("{}/{}", GITHUB_BASE, x));
+        let url: Option<String> = username
+            .clone()
+            .map(|x| format!("{}/{}", GITHUB_BASE_URL, x));
 
         let sponsor_url: Option<String> = node
             .find(Class("mr-2"))
             .next()
             .and_then(|x| x.find(Name("a")).next())
             .and_then(|x| x.attr("href"))
-            .map(|x| format!("{}{}", GITHUB_BASE, x));
+            .map(|x| format!("{}{}", GITHUB_BASE_URL, x));
 
         let repo_description: Option<String> =
             node.find(Class("mt-1")).next().map(|x| escape(x.text()));
@@ -123,11 +126,11 @@ pub async fn get_data(
     let since = since.to_str();
 
     let url = match lang {
-        Some(l) => format!("{}/{}?{}", GITHUB_URL, l, since),
-        _ => format!("{}?{}", GITHUB_URL, since),
+        Some(l) => format!("{}/{}?{}", GITHUB_TRENDING_URL, l, since),
+        _ => format!("{}?{}", GITHUB_TRENDING_URL, since),
     };
 
-    let html = helpers::fetch_html(&url).await;
+    let html = fetch_html(&url).await;
     let data: Vec<Developer> = match html {
         Ok(txt) => select_data(&txt),
         _ => {
