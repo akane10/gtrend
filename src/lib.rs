@@ -43,27 +43,27 @@ mod tests {
     use crate::Since;
 
     #[tokio::test]
-    async fn test_fetch_html_github_repo() {
+    async fn fetch_html_github_repo() {
         let github_url: &str = "https://github.com/trending";
         let html = fetch_html(github_url).await;
         assert!(html.is_ok());
     }
 
     #[tokio::test]
-    async fn test_fetch_html_github_developers() {
+    async fn fetch_html_github_developers() {
         let github_url: &str = "https://github.com/trending/developers";
         let html = fetch_html(github_url).await;
         assert!(html.is_ok());
     }
 
     #[test]
-    fn test_since_to_string() {
+    fn since_to_str() {
         let x: &str = Since::Daily.to_str();
         assert_eq!(x, "daily");
     }
 
     #[test]
-    fn test_since_from_string() {
+    fn since_from_str() {
         let x: Since = Since::from_str("daily");
         println!("Display Since: {:?}", x);
         assert_eq!(x, Since::Daily);
@@ -71,14 +71,14 @@ mod tests {
 
     const SINCE: Since = Since::Daily;
     #[test]
-    fn get_repo() {
+    fn repo() {
         let data = repos::get_data(None, SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
-    fn get_repo_author_should_always_some() {
+    fn repo_author_should_always_some() {
         let data = repos::get_data(None, SINCE, None).unwrap();
 
         let y: Vec<_> = data
@@ -91,49 +91,49 @@ mod tests {
     }
 
     #[test]
-    fn get_repo_with_lang() {
+    fn repo_with_lang() {
         let data = repos::get_data(Some("rust".to_string()), SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
-    fn get_repo_with_lang_and_spoken_lang() {
+    fn repo_with_lang_and_spoken_lang() {
         let data = repos::get_data(Some("haskell".to_string()), SINCE, Some("en".to_string()));
 
         assert!(data.is_ok())
     }
 
     #[test]
-    fn get_repo_with_unknown_lang() {
+    fn repo_with_unknown_lang() {
         let data = repos::get_data(Some("unknown".to_string()), SINCE, None);
 
         assert!(data.is_ok())
     }
 
     #[test]
-    fn get_developers() {
+    fn developers() {
         let data = developers::get_data(None, SINCE);
 
         assert!(data.is_ok());
     }
 
     #[test]
-    fn get_developers_with_lang() {
+    fn developers_with_lang() {
         let data = developers::get_data(Some("rust".to_string()), SINCE);
 
         assert!(data.is_ok());
     }
 
     #[test]
-    fn get_developers_with_unknown_lang() {
+    fn developers_with_unknown_lang() {
         let data = developers::get_data(Some("unknown".to_string()), SINCE);
 
         assert!(data.is_ok())
     }
 
     #[test]
-    fn get_developers_username_should_always_some() {
+    fn developers_username_should_always_some() {
         let data = developers::get_data(None, SINCE).unwrap();
 
         let y: Vec<_> = data
@@ -146,7 +146,7 @@ mod tests {
     }
 
     #[test]
-    fn get_developers_name_should_always_some() {
+    fn developers_name_should_always_some() {
         let data = developers::get_data(None, SINCE).unwrap();
 
         let y: Vec<_> = data
@@ -159,7 +159,7 @@ mod tests {
     }
 
     #[test]
-    fn get_developers_url_should_always_some() {
+    fn developers_url_should_always_some() {
         let data = developers::get_data(None, SINCE).unwrap();
 
         let y: Vec<_> = data
@@ -172,7 +172,7 @@ mod tests {
     }
 
     #[test]
-    fn get_developers_avatar_should_always_some() {
+    fn developers_avatar_should_always_some() {
         let data = developers::get_data(None, SINCE).unwrap();
 
         let y: Vec<_> = data
