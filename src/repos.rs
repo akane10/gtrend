@@ -49,7 +49,7 @@ fn select_data(html: &str) -> Vec<Repository> {
                     })
             };
 
-            let username_reponame: Option<(Option<String>, Option<String>)> = node
+            let username_reponame: (Option<String>, Option<String>) = node
                 .find(Name("h1"))
                 .next()
                 .and_then(|x| x.find(Name("a")).next())
@@ -65,7 +65,8 @@ fn select_data(html: &str) -> Vec<Repository> {
                         _ => None,
                     };
                     (username, reponame)
-                });
+                })
+                .unwrap_or((None, None));
 
             let current_star: Option<u32> =
                 node.find(Class("float-sm-right")).next().and_then(|tag| {
@@ -84,14 +85,12 @@ fn select_data(html: &str) -> Vec<Repository> {
                 .next()
                 .and_then(|x| Some(escape(x.text())));
 
-            let url: Option<String> = username_reponame.clone().and_then(|(username, reponame)| {
-                let github = String::from(GITHUB_BASE_URL);
-                let str_ = match (username, reponame) {
-                    (Some(u), Some(r)) => Some(format!("{}/{}/{}", github, u, r)),
-                    _ => None,
-                };
-                str_
-            });
+            let url: Option<String> = match username_reponame.clone() {
+                (Some(username), Some(reponame)) => {
+                    Some(format!("{}/{}/{}", GITHUB_BASE_URL, username, reponame))
+                }
+                _ => None,
+            };
 
             let stars_forks: Vec<u32> = node
                 .find(Class("muted-link"))
@@ -144,11 +143,12 @@ fn select_data(html: &str) -> Vec<Repository> {
 
             // println!("x: {:?}", build_by);
             return Repository {
-                avatar: username_reponame.clone().and_then(|(username, _)| {
-                    username.map(|x| format!("{}/{}.png", GITHUB_BASE_URL, x))
-                }),
-                author: username_reponame.clone().and_then(|(username, _)| username),
-                name: username_reponame.clone().and_then(|(_, reponame)| reponame),
+                avatar: username_reponame
+                    .clone()
+                    .0
+                    .map(|x| format!("{}/{}.png", GITHUB_BASE_URL, x)),
+                author: username_reponame.clone().0,
+                name: username_reponame.clone().1,
                 current_star: current_star,
                 programming_language: lang,
                 description: desc,

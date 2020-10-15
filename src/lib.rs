@@ -42,6 +42,8 @@ mod tests {
     use crate::repos;
     use crate::Since;
 
+    const SINCE: Since = Since::Daily;
+
     #[tokio::test]
     async fn fetch_html_github_repo() {
         let github_url: &str = "https://github.com/trending";
@@ -69,12 +71,18 @@ mod tests {
         assert_eq!(x, Since::Daily);
     }
 
-    const SINCE: Since = Since::Daily;
     #[test]
     fn repo() {
         let data = repos::get_data(None, SINCE, None);
 
         assert!(data.is_ok())
+    }
+
+    #[test]
+    fn repo_should_not_be_empty() {
+        let data = repos::get_data(None, SINCE, None).unwrap();
+
+        assert!(data.len() > 0)
     }
 
     #[test]
@@ -84,10 +92,10 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.author.is_none())
+            .filter(|x| x.author.is_some())
             .collect();
 
-        assert!(y.is_empty())
+        assert_eq!(y.len(), data.len())
     }
 
     #[test]
@@ -119,6 +127,13 @@ mod tests {
     }
 
     #[test]
+    fn developers_should_not_be_empty() {
+        let data = developers::get_data(None, SINCE).unwrap();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
     fn developers_with_lang() {
         let data = developers::get_data(Some("rust".to_string()), SINCE);
 
@@ -139,10 +154,10 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.username.is_none())
+            .filter(|x| x.username.is_some())
             .collect();
 
-        assert!(y.is_empty())
+        assert_eq!(y.len(), data.len());
     }
 
     #[test]
@@ -152,10 +167,10 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.name.is_none())
+            .filter(|x| x.name.is_some())
             .collect();
 
-        assert!(y.is_empty())
+        assert_eq!(y.len(), data.len());
     }
 
     #[test]
@@ -165,10 +180,10 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.url.is_none())
+            .filter(|x| x.url.is_some())
             .collect();
 
-        assert!(y.is_empty())
+        assert_eq!(y.len(), data.len());
     }
 
     #[test]
@@ -178,9 +193,9 @@ mod tests {
         let y: Vec<_> = data
             .clone()
             .into_iter()
-            .filter(|x| x.avatar.is_none())
+            .filter(|x| x.avatar.is_some())
             .collect();
 
-        assert!(y.is_empty())
+        assert_eq!(y.len(), data.len());
     }
 }
