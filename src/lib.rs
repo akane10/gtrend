@@ -112,10 +112,16 @@ mod tests {
         let data = repos::builder()
             .spoken_language("en")
             .programming_language("rust")
-            .get_data();
+            .get_data()
+            .unwrap();
 
-        assert!(data.unwrap().len() > 0);
-        // assert!(data.is_ok())
+        let x: Vec<repos::Repository> = data
+            .clone()
+            .into_iter()
+            .filter(|x| x.programming_language.as_ref().unwrap() == "Rust")
+            .collect();
+
+        assert!(data.len() == x.len());
     }
 
     #[test]
@@ -143,9 +149,10 @@ mod tests {
 
     #[test]
     fn developers() {
-        let data = developers::builder().get_data();
+        let data = developers::builder().get_data().unwrap();
 
-        assert!(data.unwrap().len() > 0);
+        // println!("{:?}", data);
+        assert!(data.len() > 0);
     }
 
     #[test]
@@ -162,9 +169,10 @@ mod tests {
     fn developers_with_lang() {
         let data = developers::builder()
             .programming_language("rust")
-            .get_data();
+            .get_data()
+            .unwrap();
 
-        assert!(data.unwrap().len() > 0);
+        assert!(data.len() > 0);
     }
 
     #[test]
