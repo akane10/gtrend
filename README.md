@@ -28,7 +28,7 @@ fn main(){
           .programming_language("rust")
           .since(Daily)
           .spoken_language("en")
-          .get_data().unwrap();
+          .get_data();
 
     let dev_data: Result<Vec<Developer>, Box<Error>> = developers::builder()
         .programming_language("rust")
@@ -47,8 +47,10 @@ fn main(){
 }
 ```
 
+## Struct
+
+### Repository
 ```rust
-// repos struct
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuiltBy {
     pub username: Option<String>,
@@ -70,8 +72,10 @@ pub struct Repository {
     pub lang_color: Option<String>,
     pub built_by: Vec<BuiltBy>,
 }
+```
 
-// developers struct
+### Developer
+```rust
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repo {
     pub name: Option<String>,
