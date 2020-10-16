@@ -2,6 +2,7 @@ use crate::{fetch_html, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
 use select::document::Document;
 use select::predicate::{Class, Name};
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repo {
@@ -26,6 +27,7 @@ impl Developer {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Builder {
     pro_lang: Option<String>,
     since: Option<String>,
@@ -41,6 +43,13 @@ impl Builder {
         let s: String = since.to_string();
         self.since = Some(s);
         self
+    }
+
+    pub fn get_data_json(self) -> Value {
+        let data = self.get_data().unwrap_or(Vec::new());
+        let data_json: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
+
+        Value::Array(data_json)
     }
 
     #[tokio::main]

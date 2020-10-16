@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn since_from_str() {
         let x: Since = Since::from_str("daily");
-        println!("Display Since: {:?}", x);
+        // println!("Display Since: {:?}", x);
         assert_eq!(x, Since::Daily);
     }
 
@@ -87,6 +87,14 @@ mod tests {
     fn repo() {
         let data = repos::builder().since(Since::Weekly).get_data();
         assert!(data.is_ok())
+    }
+
+    #[test]
+    fn repo_json() {
+        let data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json();
+
+        // println!("{}", data);
+        assert!(true)
     }
 
     #[test]
@@ -161,6 +169,14 @@ mod tests {
 
         // println!("{:?}", data);
         assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn developers_json() {
+        let data = developers::builder().get_data_json();
+
+        // println!("{:?}", data);
+        assert!(true);
     }
 
     #[test]
