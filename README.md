@@ -23,22 +23,23 @@ use gtrend::developers;
 const SINCE: Since = Since::Daily;
 
 fn main(){
-    let programming_language = String::from("rust");
-    let spoken_language = String::from("en");
-
     let since_str: &str = SINCE.to_str();
     println!("{}", since_str);
 
     let since_from_str: Since = Since::from_str("weekly");
     println!("{:?}", since_from_str);
 
-    let repos_data = repos::get_data(
-                        Some(programming_language), // or None
-                        SINCE,
-                        Some(spoken_language) // or None
-                    );
+    let repos_data = repos::builder()
+          .programming_language("rust")
+          .since(Since::Daily)
+          .spoken_language("en")
+          .get_data();
 
-    let dev_data = developers::get_data(Some(programming_language), SINCE);
+    let dev_data = developers::builder()
+        .programming_language("rust")
+        .since(Since::Daily)
+        .get_data();
+
 
     println!("repos_data {:?}", repos_data.unwrap());
     println!("dev_data {:?}", dev_data.unwrap());
