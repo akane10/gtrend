@@ -33,18 +33,18 @@ fn main(){
           .programming_language("rust")
           .since(Since::Daily)
           .spoken_language("en")
-          .get_data();
+          .get_data().unwrap();
 
     let dev_data = developers::builder()
         .programming_language("rust")
         .since(Since::Weekly)
-        .get_data();
+        .get_data().unwrap();
 
 
-    println!("repos_data {:?}", repos_data.unwrap());
-    println!("dev_data {:?}", dev_data.unwrap());
+    println!("repos_data {:?}", repos_data);
+    println!("dev_data {:?}", dev_data);
 
-    let repos_data_json: Vec<_> = repos_data.unwrap()
+    let repos_data_json: Vec<_> = repos_data
        .into_iter()
        .map(|repo| {
            let serialized = serde_json::to_string(&repo).unwrap();
