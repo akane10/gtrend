@@ -25,6 +25,60 @@ pub struct Repository {
     pub built_by: Vec<BuiltBy>,
 }
 
+pub struct Builder {
+    pro_lang: Option<&'static str>,
+    spoken_lang: Option<&'static str>,
+    since: Option<Since>,
+}
+
+impl Builder {
+    pub fn programming_language(mut self, lang: &'static str) -> Self {
+        self.pro_lang = Some(lang);
+        self
+    }
+
+    pub fn spoken_language(mut self, s_lang: &'static str) -> Self {
+        self.spoken_lang = Some(s_lang);
+        self
+    }
+
+    pub fn since(mut self, s: Since) -> Self {
+        self.since = Some(s);
+        self
+    }
+
+    #[tokio::main]
+    pub async fn get_data(&self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
+        let pro_lang_url: String = self
+            .pro_lang
+            .map(|x| format!("/{}", x))
+            .unwrap_or("".to_string());
+
+        let optional_params: String = match (self.since.as_ref(), self.spoken_lang) {
+            (Some(s), Some(sl)) => format!("?since={}&spoken_language_code={}", s.to_str(), sl),
+            (Some(s), None) => format!("?since={}", s.to_str()),
+            (None, Some(sl)) => format!("?spoken_language_code={}", sl),
+            _ => "".to_string(),
+        };
+
+        let url = format!("{}{}{}", GITHUB_TRENDING_URL, pro_lang_url, optional_params);
+
+        println!("{}", url);
+
+        let html = fetch_html(&url).await;
+        let data: Vec<Repository> = match html {
+            Ok(txt) => select_data(&txt),
+            _ => {
+                println!("err");
+                Vec::new()
+            }
+        };
+
+        // println!("data result {:?}", data);
+        Ok(data)
+    }
+}
+
 impl Repository {
     pub fn json_stringify(&self) -> serde_json::Result<String> {
         serde_json::to_string(self)
@@ -169,36 +223,10 @@ fn select_data(html: &str) -> Vec<Repository> {
     data
 }
 
-#[tokio::main]
-pub async fn get_data(
-    lang: Option<String>,
-    since: Since,
-    spoken_lang: Option<String>,
-) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
-    let since = since.to_str();
-
-    let url = match (lang, spoken_lang) {
-        (Some(l), Some(sl)) => format!(
-            "{}/{}?since={}&spoken_language_code={}",
-            GITHUB_TRENDING_URL, l, since, sl
-        ),
-        (Some(l), None) => format!("{}/{}?since={}", GITHUB_TRENDING_URL, l, since),
-        (None, Some(sl)) => format!(
-            "{}?since={}&spoken_language_code={}",
-            GITHUB_TRENDING_URL, since, sl
-        ),
-        _ => format!("{}?since={}", GITHUB_TRENDING_URL, since),
-    };
-
-    let html = fetch_html(&url).await;
-    let data: Vec<Repository> = match html {
-        Ok(txt) => select_data(&txt),
-        _ => {
-            println!("err");
-            Vec::new()
-        }
-    };
-
-    // println!("data result {:?}", data);
-    Ok(data)
+pub fn builder() -> Builder {
+    Builder {
+        pro_lang: None,
+        spoken_lang: None,
+        since: None,
+    }
 }

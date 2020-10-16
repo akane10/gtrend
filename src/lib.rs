@@ -73,21 +73,19 @@ mod tests {
 
     #[test]
     fn repo() {
-        let data = repos::get_data(None, SINCE, None);
-
+        let data = repos::builder().since(Since::Weekly).get_data();
         assert!(data.is_ok())
     }
 
     #[test]
     fn repo_should_not_be_empty() {
-        let data = repos::get_data(None, SINCE, None).unwrap();
-
+        let data = repos::builder().spoken_language("en").get_data().unwrap();
         assert!(data.len() > 0)
     }
 
     #[test]
     fn repo_author_should_always_some() {
-        let data = repos::get_data(None, SINCE, None).unwrap();
+        let data = repos::builder().get_data().unwrap();
 
         let y: Vec<_> = data
             .clone()
@@ -100,21 +98,37 @@ mod tests {
 
     #[test]
     fn repo_with_lang() {
-        let data = repos::get_data(Some("rust".to_string()), SINCE, None);
-
+        let data = repos::builder().programming_language("rust").get_data();
         assert!(data.is_ok())
     }
 
     #[test]
     fn repo_with_lang_and_spoken_lang() {
-        let data = repos::get_data(Some("haskell".to_string()), SINCE, Some("en".to_string()));
+        let data = repos::builder()
+            .spoken_language("en")
+            .programming_language("rust")
+            .get_data();
+
+        assert!(data.is_ok())
+    }
+
+    #[test]
+    fn repo_with_lang_since_and_spoken_lang() {
+        let data = repos::builder()
+            .spoken_language("en")
+            .since(Since::Daily)
+            .programming_language("rust")
+            .get_data();
 
         assert!(data.is_ok())
     }
 
     #[test]
     fn repo_with_unknown_lang() {
-        let data = repos::get_data(Some("unknown".to_string()), SINCE, None);
+        let data = repos::builder()
+            .spoken_language("en")
+            .programming_language("unkown")
+            .get_data();
 
         assert!(data.is_ok())
     }
