@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn repo_json() {
-        let data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json();
+        let _data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json();
 
         // println!("{}", data);
         assert!(true)
@@ -173,7 +173,7 @@ mod tests {
 
     #[test]
     fn developers_json() {
-        let data = developers::builder().get_data_json();
+        let _data = developers::builder().get_data_json();
 
         // println!("{:?}", data);
         assert!(true);
