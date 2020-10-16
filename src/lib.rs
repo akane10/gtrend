@@ -103,7 +103,8 @@ mod tests {
     #[test]
     fn repo_with_lang() {
         let data = repos::builder().programming_language("rust").get_data();
-        assert!(data.is_ok())
+        // assert!(data.is_ok())
+        assert!(data.unwrap().len() > 0);
     }
 
     #[test]
@@ -113,7 +114,8 @@ mod tests {
             .programming_language("rust")
             .get_data();
 
-        assert!(data.is_ok())
+        assert!(data.unwrap().len() > 0);
+        // assert!(data.is_ok())
     }
 
     #[test]
@@ -124,7 +126,8 @@ mod tests {
             .programming_language("rust")
             .get_data();
 
-        assert!(data.is_ok())
+        assert!(data.unwrap().len() > 0);
+        // assert!(data.is_ok())
     }
 
     #[test]
@@ -134,7 +137,8 @@ mod tests {
             .programming_language("unkown")
             .get_data();
 
-        assert!(data.is_ok())
+        assert!(data.unwrap().len() > 0);
+        // assert!(data.is_ok())
     }
 
     #[test]
