@@ -78,8 +78,8 @@ impl Builder {
         let html = fetch_html(&url).await;
         let data: Vec<Repository> = match html {
             Ok(txt) => select_data(&txt),
-            _ => {
-                println!("err");
+            Err(e) => {
+                println!("err: {}", e);
                 Vec::new()
             }
         };
