@@ -37,7 +37,7 @@ fn main(){
 
     let dev_data = developers::builder()
         .programming_language("rust")
-        .since(Since::Daily)
+        .since(Since::Weekly)
         .get_data();
 
 
