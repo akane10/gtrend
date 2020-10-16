@@ -26,6 +26,7 @@ pub struct Repository {
     pub built_by: Vec<BuiltBy>,
 }
 
+#[derive(Debug, Clone)]
 pub struct Builder {
     pro_lang: Option<String>,
     spoken_lang: Option<String>,
