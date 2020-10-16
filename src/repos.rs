@@ -28,7 +28,7 @@ pub struct Repository {
 pub struct Builder {
     pro_lang: Option<String>,
     spoken_lang: Option<String>,
-    since: Option<Since>,
+    since: Option<String>,
 }
 
 impl Builder {
@@ -42,7 +42,8 @@ impl Builder {
         self
     }
 
-    pub fn since(mut self, s: Since) -> Self {
+    pub fn since(mut self, since: Since) -> Self {
+        let s: String = since.to_string();
         self.since = Some(s);
         self
     }
@@ -57,8 +58,8 @@ impl Builder {
             .unwrap_or("".to_string());
 
         let optional_params: String = match (self.since.as_ref(), self.spoken_lang.as_ref()) {
-            (Some(s), Some(sl)) => format!("?since={}&spoken_language_code={}", s.to_str(), sl),
-            (Some(s), None) => format!("?since={}", s.to_str()),
+            (Some(s), Some(sl)) => format!("?since={}&spoken_language_code={}", s, sl),
+            (Some(s), None) => format!("?since={}", s),
             (None, Some(sl)) => format!("?spoken_language_code={}", sl),
             _ => "".to_string(),
         };
