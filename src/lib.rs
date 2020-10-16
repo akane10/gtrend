@@ -46,7 +46,7 @@ mod tests {
     use crate::repos;
     use crate::Since;
 
-    const SINCE: Since = Since::Daily;
+    // const SINCE: Since = Since::Daily;
 
     #[tokio::test]
     async fn fetch_html_github_repo() {
@@ -134,11 +134,11 @@ mod tests {
     fn repo_with_unknown_lang() {
         let data = repos::builder()
             .spoken_language("en")
-            .programming_language("unkown")
+            .programming_language("unknown")
             .get_data();
 
-        assert!(data.unwrap().len() > 0);
-        // assert!(data.is_ok())
+        // assert!(data.unwrap().len() > 0);
+        assert!(data.is_ok())
     }
 
     #[test]

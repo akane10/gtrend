@@ -27,13 +27,13 @@ impl Developer {
 }
 
 pub struct Builder {
-    pro_lang: Option<&'static str>,
+    pro_lang: Option<String>,
     since: Option<String>,
 }
 
 impl Builder {
     pub fn programming_language(mut self, lang: &'static str) -> Self {
-        self.pro_lang = Some(lang);
+        self.pro_lang = Some(lang.to_string());
         self
     }
 

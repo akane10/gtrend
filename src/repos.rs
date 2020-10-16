@@ -26,19 +26,19 @@ pub struct Repository {
 }
 
 pub struct Builder {
-    pro_lang: Option<&'static str>,
-    spoken_lang: Option<&'static str>,
+    pro_lang: Option<String>,
+    spoken_lang: Option<String>,
     since: Option<Since>,
 }
 
 impl Builder {
     pub fn programming_language(mut self, lang: &'static str) -> Self {
-        self.pro_lang = Some(lang);
+        self.pro_lang = Some(lang.to_string());
         self
     }
 
     pub fn spoken_language(mut self, s_lang: &'static str) -> Self {
-        self.spoken_lang = Some(s_lang);
+        self.spoken_lang = Some(s_lang.to_string());
         self
     }
 
@@ -51,10 +51,12 @@ impl Builder {
     pub async fn get_data(&self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
         let pro_lang_url: String = self
             .pro_lang
+            .as_ref()
+            // .clone()
             .map(|x| format!("/{}", x))
             .unwrap_or("".to_string());
 
-        let optional_params: String = match (self.since.as_ref(), self.spoken_lang) {
+        let optional_params: String = match (self.since.as_ref(), self.spoken_lang.as_ref()) {
             (Some(s), Some(sl)) => format!("?since={}&spoken_language_code={}", s.to_str(), sl),
             (Some(s), None) => format!("?since={}", s.to_str()),
             (None, Some(sl)) => format!("?spoken_language_code={}", sl),
