@@ -26,6 +26,50 @@ impl Developer {
     }
 }
 
+pub struct Builder {
+    pro_lang: Option<&'static str>,
+    since: Option<String>,
+}
+
+impl Builder {
+    pub fn programming_language(mut self, lang: &'static str) -> Self {
+        self.pro_lang = Some(lang);
+        self
+    }
+
+    pub fn since(mut self, since: Since) -> Self {
+        let s: String = since.to_string();
+        self.since = Some(s);
+        self
+    }
+
+    #[tokio::main]
+    pub async fn get_data(self) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
+        let params_url: String = match (self.pro_lang, self.since) {
+            (Some(l), Some(s)) => format!("/{}?since={}", l, s),
+            (None, Some(s)) => format!("?since={}", s),
+            (Some(l), None) => format!("/{}", l),
+            _ => "".to_string(),
+        };
+
+        let url = format!("{}{}{}", GITHUB_TRENDING_URL, "/developers", params_url);
+
+        // println!("{}", url);
+
+        let html = fetch_html(&url).await;
+        let data: Vec<Developer> = match html {
+            Ok(txt) => select_data(&txt),
+            _ => {
+                println!("err");
+                Vec::new()
+            }
+        };
+
+        // println!("data result {:?}", data);
+        Ok(data)
+    }
+}
+
 fn select_data(html: &str) -> Vec<Developer> {
     let document = Document::from(html);
 
@@ -120,27 +164,9 @@ fn select_data(html: &str) -> Vec<Developer> {
     data
 }
 
-#[tokio::main]
-pub async fn get_data(
-    lang: Option<String>,
-    since: Since,
-) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
-    let since = since.to_str();
-
-    let url = match lang {
-        Some(l) => format!("{}/{}?{}", GITHUB_TRENDING_URL, l, since),
-        _ => format!("{}?{}", GITHUB_TRENDING_URL, since),
-    };
-
-    let html = fetch_html(&url).await;
-    let data: Vec<Developer> = match html {
-        Ok(txt) => select_data(&txt),
-        _ => {
-            println!("err");
-            Vec::new()
-        }
-    };
-
-    // println!("data result {:?}", data);
-    Ok(data)
+pub fn builder() -> Builder {
+    Builder {
+        pro_lang: None,
+        since: None,
+    }
 }

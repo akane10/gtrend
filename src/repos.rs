@@ -63,7 +63,7 @@ impl Builder {
 
         let url = format!("{}{}{}", GITHUB_TRENDING_URL, pro_lang_url, optional_params);
 
-        println!("{}", url);
+        // println!("{}", url);
 
         let html = fetch_html(&url).await;
         let data: Vec<Repository> = match html {

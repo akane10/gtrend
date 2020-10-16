@@ -9,7 +9,7 @@ async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     Ok(resp)
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Since {
     Daily,
     Weekly,
@@ -23,6 +23,10 @@ impl Since {
             Self::Weekly => "weekly",
             Self::Monthly => "monthly",
         }
+    }
+
+    pub fn to_string(&self) -> String {
+        self.to_str().to_string()
     }
 
     pub fn from_str(s: &str) -> Self {
@@ -135,35 +139,46 @@ mod tests {
 
     #[test]
     fn developers() {
-        let data = developers::get_data(None, SINCE);
+        let data = developers::builder().get_data();
 
-        assert!(data.is_ok());
+        assert!(data.unwrap().len() > 0);
     }
 
     #[test]
     fn developers_should_not_be_empty() {
-        let data = developers::get_data(None, SINCE).unwrap();
+        let data = developers::builder()
+            .since(Since::Monthly)
+            .get_data()
+            .unwrap();
 
         assert!(data.len() > 0);
     }
 
     #[test]
     fn developers_with_lang() {
-        let data = developers::get_data(Some("rust".to_string()), SINCE);
+        let data = developers::builder()
+            .programming_language("rust")
+            .get_data();
 
-        assert!(data.is_ok());
+        assert!(data.unwrap().len() > 0);
     }
 
     #[test]
     fn developers_with_unknown_lang() {
-        let data = developers::get_data(Some("unknown".to_string()), SINCE);
+        let data = developers::builder()
+            .programming_language("unknown")
+            .get_data();
 
-        assert!(data.is_ok())
+        assert!(data.unwrap().len() > 0);
     }
 
     #[test]
     fn developers_username_should_always_some() {
-        let data = developers::get_data(None, SINCE).unwrap();
+        let data = developers::builder()
+            .programming_language("rust")
+            .since(Since::Daily)
+            .get_data()
+            .unwrap();
 
         let y: Vec<_> = data
             .clone()
@@ -176,7 +191,11 @@ mod tests {
 
     #[test]
     fn developers_name_should_always_some() {
-        let data = developers::get_data(None, SINCE).unwrap();
+        let data = developers::builder()
+            .programming_language("rust")
+            .since(Since::Daily)
+            .get_data()
+            .unwrap();
 
         let y: Vec<_> = data
             .clone()
@@ -189,7 +208,11 @@ mod tests {
 
     #[test]
     fn developers_url_should_always_some() {
-        let data = developers::get_data(None, SINCE).unwrap();
+        let data = developers::builder()
+            .programming_language("rust")
+            .since(Since::Daily)
+            .get_data()
+            .unwrap();
 
         let y: Vec<_> = data
             .clone()
@@ -202,7 +225,11 @@ mod tests {
 
     #[test]
     fn developers_avatar_should_always_some() {
-        let data = developers::get_data(None, SINCE).unwrap();
+        let data = developers::builder()
+            .programming_language("rust")
+            .since(Since::Daily)
+            .get_data()
+            .unwrap();
 
         let y: Vec<_> = data
             .clone()
