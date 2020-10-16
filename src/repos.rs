@@ -32,12 +32,12 @@ pub struct Builder {
 }
 
 impl Builder {
-    pub fn programming_language(mut self, lang: &'static str) -> Self {
+    pub fn programming_language(mut self, lang: &str) -> Self {
         self.pro_lang = Some(lang.to_string());
         self
     }
 
-    pub fn spoken_language(mut self, s_lang: &'static str) -> Self {
+    pub fn spoken_language(mut self, s_lang: &str) -> Self {
         self.spoken_lang = Some(s_lang.to_string());
         self
     }
