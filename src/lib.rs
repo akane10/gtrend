@@ -26,7 +26,15 @@ impl Since {
     }
 
     pub fn to_string(&self) -> String {
-        self.to_str().to_string()
+        let daily = String::from("daily");
+        let weekly = String::from("weekly");
+        let monthly = String::from("monthly");
+
+        match self {
+            Self::Daily => daily,
+            Self::Weekly => weekly,
+            Self::Monthly => monthly,
+        }
     }
 
     pub fn from_str(s: &str) -> Self {

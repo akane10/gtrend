@@ -23,12 +23,6 @@ use gtrend::developers;
 const SINCE: Since = Since::Daily;
 
 fn main(){
-    let since_str: &str = SINCE.to_str();
-    println!("{}", since_str);
-
-    let since_from_str: Since = Since::from_str("weekly");
-    println!("{:?}", since_from_str);
-
     let repos_data = repos::builder()
           .programming_language("rust")
           .since(Since::Daily)
