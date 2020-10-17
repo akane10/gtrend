@@ -1,4 +1,5 @@
 pub mod developers;
+pub mod languages;
 pub mod repos;
 
 const GITHUB_BASE_URL: &str = "https://github.com";
@@ -81,6 +82,20 @@ mod tests {
         let x: Since = Since::from_str("daily");
         // println!("Display Since: {:?}", x);
         assert_eq!(x, Since::Daily);
+    }
+
+    #[test]
+    fn languages() {
+        let data = languages::get_data();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn languages_json() {
+        let data = languages::get_data_json();
+
+        assert!(data.is_array());
     }
 
     #[test]
