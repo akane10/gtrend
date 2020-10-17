@@ -31,9 +31,9 @@ fn main(){
           .get_data();
 
     let dev_data: Result<Vec<Developer>, Box<Error>> = developers::builder()
-        .programming_language("rust")
-        .since(Weekly)
-        .get_data();
+          .programming_language("rust")
+          .since(Weekly)
+          .get_data();
 
     let repos_data: serde_json::Value = repos::builder()
           .programming_language("rust")
@@ -44,6 +44,13 @@ fn main(){
     println!("repos_data {:?}", repos_data.unwrap());
     println!("dev_data {:?}", dev_data.unwrap());
     println!("repos_data_json {:?}", repos_data_json);
+
+
+    // Convert Since to String and str
+    let since_str: &str = Daily.to_str();
+    let since_string: String = Weekly.to_string(); 
+    let since_from_str: Since = Since.from_str("monthly");
+    let since_fallback: Since = Since.from_str("unknown"); // fallback to daily
 }
 ```
 
