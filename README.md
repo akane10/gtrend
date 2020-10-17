@@ -21,6 +21,9 @@ use gtrend::repos;
 use gtrend::repos::Repository;
 use gtrend::developers;
 use gtrend::developers::Developer;
+use gtrend::Language;
+use gtrend::languages;
+use gtrend::spoken_languages;
 use std::error::Error;
 
 fn main(){
@@ -51,6 +54,13 @@ fn main(){
     let since_string: String = Weekly.to_string(); 
     let since_from_str: Since = Since.from_str("monthly");
     let since_fallback: Since = Since.from_str("unknown"); // fallback to daily
+
+    // Available spoken language and programming language
+    let programming_lang_list: Vec<Language> = languages::get_data();
+    let spoken_lang_list: Vec<Language> = spoken_languages::get_data();
+
+    let programmin_lang_list_json: Value = languages::get_data_json();
+    let spoken_lang_list_json: Value = spoken_languages::get_data_json();
 }
 ```
 
@@ -98,5 +108,16 @@ pub struct Developer {
     pub sponsor_url: Option<String>,
     pub avatar: Option<String>,
     pub repo: Option<Repo>,
+}
+```
+
+### Language
+```rust
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct Language {
+    #[serde(alias = "urlParam")]
+    pub url_param: String,
+    pub name: String,
 }
 ```
