@@ -1,9 +1,37 @@
 pub mod developers;
 pub mod languages;
 pub mod repos;
+pub mod spoken_languages;
+
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 const GITHUB_BASE_URL: &str = "https://github.com";
 const GITHUB_TRENDING_URL: &str = "https://github.com/trending";
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase"))]
+pub struct Language {
+    #[serde(alias = "urlParam")]
+    pub url_param: String,
+    pub name: String,
+}
+
+impl Language {
+    pub fn get_data(bytes: &[u8]) -> Vec<Language> {
+        let data = String::from_utf8_lossy(bytes);
+        let data_lang: Vec<Language> = serde_json::from_str(&data).unwrap();
+
+        data_lang
+    }
+
+    pub fn get_data_json(data: Vec<Language>) -> Value {
+        let x: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
+        let data_json: Value = Value::Array(x);
+
+        data_json
+    }
+}
 
 async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let resp = reqwest::get(url).await?.text().await?;
@@ -94,6 +122,20 @@ mod tests {
     #[test]
     fn languages_json() {
         let data = languages::get_data_json();
+
+        assert!(data.is_array());
+    }
+
+    #[test]
+    fn spoken_languages() {
+        let data = spoken_languages::get_data();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn spoken_languages_json() {
+        let data = spoken_languages::get_data_json();
 
         assert!(data.is_array());
     }
