@@ -17,7 +17,7 @@ gtrend = { git = "https://gitlab.com/akane10/gtrend" }
 
 ```rust
 use gtrend::Since::{Daily, Weekly, Monthly};
-use gtrend::{repos, developers, language, Language, spoken_languages};
+use gtrend::{repos, developers, languages, Since, Language, spoken_languages};
 use gtrend::repos::Repository;
 use gtrend::developers::Developer;
 use std::error::Error;
