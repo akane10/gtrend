@@ -205,17 +205,33 @@ mod tests {
             .get_data();
 
         assert!(data.unwrap().len() > 0);
-        // assert!(data.is_ok())
     }
 
     #[test]
     fn repo_with_unknown_lang() {
         let data = repos::builder()
             .spoken_language("en")
-            .programming_language("unknownwdawdaw")
+            .programming_language("wdawdaw")
             .get_data();
 
-        assert!(data.is_ok())
+        assert!(data.is_ok());
+    }
+
+    #[test]
+    fn repo_with_cpp_lang() {
+        let data = repos::builder()
+            .since(Since::Daily)
+            .programming_language("C++")
+            .get_data()
+            .unwrap();
+
+        let x: Vec<repos::Repository> = data
+            .clone()
+            .into_iter()
+            .filter(|x| x.programming_language.as_ref().unwrap() == "C++")
+            .collect();
+
+        assert!(data.len() == x.len());
     }
 
     #[test]
