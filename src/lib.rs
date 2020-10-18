@@ -215,7 +215,17 @@ mod tests {
             .programming_language("unknownwdawdaw")
             .get_data();
 
-        // assert!(data.unwrap().len() > 0);
+        assert!(data.is_ok())
+    }
+
+    #[test]
+    fn repo_with_empty_spoken_lang() {
+        let data = repos::builder()
+            .spoken_language("")
+            .since(Since::Daily)
+            .programming_language("rust")
+            .get_data();
+
         assert!(data.is_ok())
     }
 
