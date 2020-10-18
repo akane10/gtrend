@@ -10,7 +10,7 @@ Cargo.toml
 
 ```
 [dependencies]
-gtrend = { git = "https://gitlab.com/akane10/gtrend", branch = "master" }
+gtrend = { git = "https://gitlab.com/akane10/gtrend" }
 ```
 
 ## Usage
