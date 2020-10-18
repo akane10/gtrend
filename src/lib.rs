@@ -212,7 +212,7 @@ mod tests {
     fn repo_with_unknown_lang() {
         let data = repos::builder()
             .spoken_language("en")
-            .programming_language("unknown")
+            .programming_language("unknownwdawdaw")
             .get_data();
 
         // assert!(data.unwrap().len() > 0);
