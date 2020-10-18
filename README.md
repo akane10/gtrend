@@ -17,23 +17,19 @@ gtrend = { git = "https://gitlab.com/akane10/gtrend", branch = "master" }
 
 ```rust
 use gtrend::Since::{Daily, Weekly, Monthly};
-use gtrend::repos;
+use gtrend::{repos, developers, language, Language, spoken_languages};
 use gtrend::repos::Repository;
-use gtrend::developers;
 use gtrend::developers::Developer;
-use gtrend::Language;
-use gtrend::languages;
-use gtrend::spoken_languages;
 use std::error::Error;
 
 fn main(){
-    let repos_data: Result<Vec<Repository>, Box<Error>> = repos::builder()
+    let repos_data: Result<Vec<Repository>, Box<dyn Error>> = repos::builder()
           .programming_language("rust")
           .since(Daily)
           .spoken_language("en")
           .get_data();
 
-    let dev_data: Result<Vec<Developer>, Box<Error>> = developers::builder()
+    let dev_data: Result<Vec<Developer>, Box<dyn Error>> = developers::builder()
           .programming_language("rust")
           .since(Weekly)
           .get_data();
