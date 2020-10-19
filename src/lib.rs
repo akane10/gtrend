@@ -17,6 +17,12 @@ pub struct Language {
     pub name: String,
 }
 
+pub enum By<'a> {
+    Name(&'a str),
+    UrlParam(&'a str),
+    Both(&'a str),
+}
+
 impl Language {
     pub fn get_data(bytes: &[u8]) -> Vec<Language> {
         let data = String::from_utf8_lossy(bytes);

@@ -1,5 +1,6 @@
 use crate::{
-    fetch_html, languages, spoken_languages, Language, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL,
+    fetch_html, languages, spoken_languages, By, Language, Since, GITHUB_BASE_URL,
+    GITHUB_TRENDING_URL,
 };
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
@@ -37,7 +38,7 @@ pub struct Builder {
 
 impl Builder {
     pub fn programming_language(mut self, lang: &str) -> Self {
-        let lang_ = languages::find_by_name(lang);
+        let lang_: Option<Language> = languages::find(By::Both(lang));
 
         match lang_ {
             Some(val) => {
@@ -52,7 +53,7 @@ impl Builder {
     }
 
     pub fn spoken_language(mut self, s_lang: &str) -> Self {
-        let s_lang_: Option<Language> = spoken_languages::find_by_both(s_lang);
+        let s_lang_: Option<Language> = spoken_languages::find(By::Both(s_lang));
 
         match s_lang_ {
             Some(val) => {

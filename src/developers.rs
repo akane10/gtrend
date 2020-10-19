@@ -1,4 +1,4 @@
-use crate::{fetch_html, languages, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
+use crate::{fetch_html, languages, By, Language, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
 use select::document::Document;
 use select::predicate::{Class, Name};
 use serde::{Deserialize, Serialize};
@@ -35,7 +35,7 @@ pub struct Builder {
 
 impl Builder {
     pub fn programming_language(mut self, lang: &str) -> Self {
-        let lang_ = languages::find_by_both(lang);
+        let lang_: Option<Language> = languages::find(By::Both(lang));
 
         match lang_ {
             Some(val) => {

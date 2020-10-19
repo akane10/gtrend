@@ -1,4 +1,4 @@
-use crate::Language;
+use crate::{By, Language};
 use serde_json::Value;
 
 pub fn get_data() -> Vec<Language> {
@@ -16,28 +16,18 @@ pub fn get_data_json() -> Value {
     data_json
 }
 
-pub fn find_by_name(lang: &str) -> Option<Language> {
-    let lang_lists = get_data();
+pub fn find(by: By) -> Option<Language> {
+    let mut lang_lists = get_data().into_iter();
 
-    lang_lists
-        .into_iter()
-        .find(|x| x.name.to_lowercase() == lang.to_lowercase())
-}
+    match by {
+        By::Name(lang) => lang_lists.find(|x| x.name.to_lowercase() == lang.to_lowercase()),
+        By::UrlParam(lang) => {
+            lang_lists.find(|x| x.url_param.to_lowercase() == lang.to_lowercase())
+        }
+        By::Both(lang) => lang_lists.find(|x| {
+            let l = lang.to_lowercase();
 
-pub fn find_by_url_param(lang: &str) -> Option<Language> {
-    let lang_lists = get_data();
-
-    lang_lists
-        .into_iter()
-        .find(|x| x.url_param.to_lowercase() == lang.to_lowercase())
-}
-
-pub fn find_by_both(lang: &str) -> Option<Language> {
-    let lang_lists = get_data();
-
-    lang_lists.into_iter().find(|x| {
-        let l = lang.to_lowercase();
-
-        x.url_param.to_lowercase() == l || x.name.to_lowercase() == l
-    })
+            x.url_param.to_lowercase() == l || x.name.to_lowercase() == l
+        }),
+    }
 }
