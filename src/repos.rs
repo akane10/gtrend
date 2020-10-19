@@ -1,4 +1,6 @@
-use crate::{fetch_html, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL};
+use crate::{
+    fetch_html, languages, spoken_languages, Language, Since, GITHUB_BASE_URL, GITHUB_TRENDING_URL,
+};
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
 use serde::{Deserialize, Serialize};
@@ -35,13 +37,33 @@ pub struct Builder {
 
 impl Builder {
     pub fn programming_language(mut self, lang: &str) -> Self {
-        self.pro_lang = Some(lang.to_string());
-        self
+        let lang_ = languages::find_by_name(lang);
+
+        match lang_ {
+            Some(val) => {
+                self.pro_lang = Some(val.url_param);
+                self
+            }
+            _ => {
+                self.pro_lang = Some(lang.to_string());
+                self
+            }
+        }
     }
 
     pub fn spoken_language(mut self, s_lang: &str) -> Self {
-        self.spoken_lang = Some(s_lang.to_string());
-        self
+        let s_lang_: Option<Language> = spoken_languages::find_by_both(s_lang);
+
+        match s_lang_ {
+            Some(val) => {
+                self.spoken_lang = Some(val.url_param.clone());
+                self
+            }
+            _ => {
+                self.spoken_lang = Some(s_lang.to_string());
+                self
+            }
+        }
     }
 
     pub fn since(mut self, since: Since) -> Self {
