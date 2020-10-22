@@ -1,7 +1,4 @@
-use crate::{
-    fetch_html, languages, spoken_languages, By, Language, Since, GITHUB_BASE_URL,
-    GITHUB_TRENDING_URL,
-};
+use crate::*;
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
 use serde::{Deserialize, Serialize};
