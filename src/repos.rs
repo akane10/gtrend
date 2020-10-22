@@ -29,6 +29,12 @@ pub struct Repository {
     pub built_by: Vec<BuiltBy>,
 }
 
+impl Repository {
+    pub fn json_stringify(&self) -> serde_json::Result<String> {
+        serde_json::to_string(self)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Builder {
     pro_lang: Option<String>,
@@ -110,12 +116,6 @@ impl Builder {
 
         // println!("data result {:?}", data);
         Ok(data)
-    }
-}
-
-impl Repository {
-    pub fn json_stringify(&self) -> serde_json::Result<String> {
-        serde_json::to_string(self)
     }
 }
 

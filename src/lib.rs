@@ -39,11 +39,6 @@ impl Language {
     }
 }
 
-async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let resp = reqwest::get(url).await?.text().await?;
-    Ok(resp)
-}
-
 #[derive(PartialEq, Debug, Clone)]
 pub enum Since {
     Daily,
@@ -80,6 +75,11 @@ impl Since {
             _ => Self::Daily,
         }
     }
+}
+
+async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let resp = reqwest::get(url).await?.text().await?;
+    Ok(resp)
 }
 
 #[cfg(test)]
