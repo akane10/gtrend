@@ -39,22 +39,9 @@ pub struct Builder {
     since: Option<String>,
 }
 
+impl_builder_T!(for Builder);
+
 impl Builder {
-    pub fn programming_language(mut self, lang: &str) -> Self {
-        let lang_: Option<Language> = languages::find(By::Both(lang));
-
-        match lang_ {
-            Some(val) => {
-                self.pro_lang = Some(val.url_param);
-                self
-            }
-            _ => {
-                self.pro_lang = Some(lang.to_string());
-                self
-            }
-        }
-    }
-
     pub fn spoken_language(mut self, s_lang: &str) -> Self {
         let s_lang_: Option<Language> = spoken_languages::find(By::Both(s_lang));
 
@@ -68,12 +55,6 @@ impl Builder {
                 self
             }
         }
-    }
-
-    pub fn since(mut self, since: Since) -> Self {
-        let s: String = since.to_string();
-        self.since = Some(s);
-        self
     }
 
     pub fn get_data_json(&self) -> Value {
