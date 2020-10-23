@@ -20,10 +20,6 @@ trait BuilderT {
 macro_rules! impl_builder_T {
     (for $($t:ty),+) => {
         $(impl BuilderT for $t {
-            // fn double(&self) -> u32 {
-                // self.x * 2
-            // }
-
             fn programming_language(mut self, lang: &str) -> Self {
                 let lang_: Option<Language> = languages::find(By::Both(lang));
 
