@@ -11,7 +11,6 @@ const GITHUB_TRENDING_URL: &str = "https://github.com/trending";
 
 trait BuilderT {
     fn programming_language(self, lang: &str) -> Self;
-    // fn spoken_language(self, s_lang: &str) -> Self;
     fn since(self, since: Since) -> Self;
 }
 
@@ -33,7 +32,6 @@ macro_rules! impl_builder_T {
                         self
                     }
                 }
-
             }
 
             fn since(mut self, since: Since) -> Self {
