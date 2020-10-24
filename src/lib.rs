@@ -24,12 +24,12 @@ macro_rules! impl_builder_T {
 
                 match lang_ {
                         Some(val) => {
-                        self.pro_lang = Some(val.url_param);
-                        self
+                            self.pro_lang = Some(val.url_param);
+                            self
                     }
-                    _ => {
-                        self.pro_lang = Some(lang.to_string());
-                        self
+                        _ => {
+                            self.pro_lang = Some(lang.to_string());
+                            self
                     }
                 }
             }
