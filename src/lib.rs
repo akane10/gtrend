@@ -102,12 +102,12 @@ impl Since {
         }
     }
 
-    pub fn from_str(s: &str) -> Self {
-        match s {
-            "daily" => Self::Daily,
-            "weekly" => Self::Weekly,
-            "monthly" => Self::Monthly,
-            _ => Self::Daily,
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s.to_lowercase().as_ref() {
+            "daily" => Some(Self::Daily),
+            "weekly" => Some(Self::Weekly),
+            "monthly" => Some(Self::Monthly),
+            _ => None,
         }
     }
 }
@@ -148,7 +148,7 @@ mod tests {
 
     #[test]
     fn since_from_str() {
-        let x: Since = Since::from_str("daily");
+        let x: Since = Since::from_str("daily").unwrap_or(Since::Daily);
         // println!("Display Since: {:?}", x);
         assert_eq!(x, Since::Daily);
     }
