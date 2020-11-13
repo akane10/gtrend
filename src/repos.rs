@@ -57,14 +57,13 @@ impl Builder {
         }
     }
 
-    pub fn get_data_json(&self) -> Value {
-        let data = self.get_data().unwrap_or(Vec::new());
+    pub async fn get_data_json(&self) -> Value {
+        let data = self.get_data().await.unwrap_or(Vec::new());
         let data_json: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
 
         Value::Array(data_json)
     }
 
-    #[tokio::main]
     pub async fn get_data(&self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
         let pro_lang_url: String = self
             .pro_lang

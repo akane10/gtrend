@@ -181,28 +181,32 @@ mod tests {
         assert!(data.is_array());
     }
 
-    #[test]
-    fn repo() {
-        let data = repos::builder().since(Since::Weekly).get_data();
+    #[tokio::test]
+    async fn repo() {
+        let data = repos::builder().since(Since::Weekly).get_data().await;
         assert!(data.is_ok())
     }
 
-    #[test]
-    fn repo_json() {
-        let data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json();
+    #[tokio::test]
+    async fn repo_json() {
+        let data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json().await;
 
         assert!(data.is_array());
     }
 
-    #[test]
-    fn repo_should_not_be_empty() {
-        let data = repos::builder().spoken_language("en").get_data().unwrap();
+    #[tokio::test]
+    async fn repo_should_not_be_empty() {
+        let data = repos::builder()
+            .spoken_language("en")
+            .get_data()
+            .await
+            .unwrap();
         assert!(data.len() > 0)
     }
 
-    #[test]
-    fn repo_author_should_always_some() {
-        let data = repos::builder().get_data().unwrap();
+    #[tokio::test]
+    async fn repo_author_should_always_some() {
+        let data = repos::builder().get_data().await.unwrap();
 
         let y: Vec<_> = data
             .clone()
@@ -213,19 +217,23 @@ mod tests {
         assert_eq!(y.len(), data.len())
     }
 
-    #[test]
-    fn repo_with_lang() {
-        let data = repos::builder().programming_language("rust").get_data();
+    #[tokio::test]
+    async fn repo_with_lang() {
+        let data = repos::builder()
+            .programming_language("rust")
+            .get_data()
+            .await;
         // assert!(data.is_ok())
         assert!(data.unwrap().len() > 0);
     }
 
-    #[test]
-    fn repo_with_lang_and_spoken_lang() {
+    #[tokio::test]
+    async fn repo_with_lang_and_spoken_lang() {
         let data = repos::builder()
             .spoken_language("en")
             .programming_language("rust")
             .get_data()
+            .await
             .unwrap();
 
         let x: Vec<repos::Repository> = data
@@ -237,33 +245,36 @@ mod tests {
         assert!(data.len() == x.len());
     }
 
-    #[test]
-    fn repo_with_lang_since_and_spoken_lang() {
+    #[tokio::test]
+    async fn repo_with_lang_since_and_spoken_lang() {
         let data = repos::builder()
             .spoken_language("en")
             .since(Since::Daily)
             .programming_language("rust")
-            .get_data();
+            .get_data()
+            .await;
 
         assert!(data.unwrap().len() > 0);
     }
 
-    #[test]
-    fn repo_with_unknown_lang() {
+    #[tokio::test]
+    async fn repo_with_unknown_lang() {
         let data = repos::builder()
             .spoken_language("en")
             .programming_language("wdawdaw")
-            .get_data();
+            .get_data()
+            .await;
 
         assert!(data.is_ok());
     }
 
-    #[test]
-    fn repo_with_cpp_lang() {
+    #[tokio::test]
+    async fn repo_with_cpp_lang() {
         let data = repos::builder()
             .since(Since::Daily)
             .programming_language("C++")
             .get_data()
+            .await
             .unwrap();
 
         let x: Vec<repos::Repository> = data
@@ -275,68 +286,73 @@ mod tests {
         assert!(data.len() == x.len());
     }
 
-    #[test]
-    fn repo_with_empty_spoken_lang() {
+    #[tokio::test]
+    async fn repo_with_empty_spoken_lang() {
         let data = repos::builder()
             .spoken_language("")
             .since(Since::Daily)
             .programming_language("rust")
-            .get_data();
+            .get_data()
+            .await;
 
         assert!(data.is_ok())
     }
 
-    #[test]
-    fn developers() {
-        let data = developers::builder().get_data().unwrap();
+    #[tokio::test]
+    async fn developers() {
+        let data = developers::builder().get_data().await.unwrap();
 
         // println!("{:?}", data);
         assert!(data.len() > 0);
     }
 
-    #[test]
-    fn developers_json() {
-        let data = developers::builder().get_data_json();
+    #[tokio::test]
+    async fn developers_json() {
+        let data = developers::builder().get_data_json().await;
 
         // println!("{:?}", data);
         assert!(data.is_array());
     }
 
-    #[test]
-    fn developers_should_not_be_empty() {
+    #[tokio::test]
+    async fn developers_should_not_be_empty() {
         let data = developers::builder()
             .since(Since::Monthly)
             .get_data()
+            .await
             .unwrap();
 
         assert!(data.len() > 0);
     }
 
-    #[test]
-    fn developers_with_lang() {
+    #[tokio::test]
+    async fn developers_with_lang() {
         let data = developers::builder()
             .programming_language("rust")
             .get_data()
+            .await
             .unwrap();
 
         assert!(data.len() > 0);
     }
 
-    #[test]
-    fn developers_with_unknown_lang() {
+    #[tokio::test]
+    async fn developers_with_unknown_lang() {
         let data = developers::builder()
             .programming_language("unknown")
-            .get_data();
+            .get_data()
+            .await;
 
         assert!(data.unwrap().len() > 0);
     }
 
-    #[test]
-    fn developers_username_should_always_some() {
+    #[tokio::test]
+    async fn developers_username_should_always_some() {
         let data = developers::builder()
             .programming_language("rust")
             .since(Since::Daily)
             .get_data()
+            .await
             .unwrap();
 
         let y: Vec<_> = data
@@ -348,12 +364,13 @@ mod tests {
         assert_eq!(y.len(), data.len());
     }
 
-    #[test]
-    fn developers_name_should_always_some() {
+    #[tokio::test]
+    async fn developers_name_should_always_some() {
         let data = developers::builder()
             .programming_language("rust")
             .since(Since::Daily)
             .get_data()
+            .await
             .unwrap();
 
         let y: Vec<_> = data
@@ -365,12 +382,13 @@ mod tests {
         assert_eq!(y.len(), data.len());
     }
 
-    #[test]
-    fn developers_url_should_always_some() {
+    #[tokio::test]
+    async fn developers_url_should_always_some() {
         let data = developers::builder()
             .programming_language("rust")
             .since(Since::Daily)
             .get_data()
+            .await
             .unwrap();
 
         let y: Vec<_> = data
@@ -382,12 +400,13 @@ mod tests {
         assert_eq!(y.len(), data.len());
     }
 
-    #[test]
-    fn developers_avatar_should_always_some() {
+    #[tokio::test]
+    async fn developers_avatar_should_always_some() {
         let data = developers::builder()
             .programming_language("rust")
             .since(Since::Daily)
             .get_data()
+            .await
             .unwrap();
 
         let y: Vec<_> = data

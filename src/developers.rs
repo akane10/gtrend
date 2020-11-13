@@ -36,14 +36,14 @@ pub struct Builder {
 impl_builder_T!(for Builder);
 
 impl Builder {
-    pub fn get_data_json(self) -> Value {
-        let data = self.get_data().unwrap_or(Vec::new());
+    pub async fn get_data_json(self) -> Value {
+        let data = self.get_data().await.unwrap_or(Vec::new());
         let data_json: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
 
         Value::Array(data_json)
     }
 
-    #[tokio::main]
+    // #[tokio::main]
     pub async fn get_data(self) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
         let params_url: String = match (self.pro_lang, self.since) {
             (Some(l), Some(s)) => format!("/{}?since={}", l, s),
