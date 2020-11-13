@@ -33,9 +33,30 @@ pub struct Builder {
     since: Option<String>,
 }
 
-impl_builder_T!(for Builder);
+// impl_builder_T!(for Builder);
 
 impl Builder {
+    pub fn programming_language(mut self, lang: &str) -> Self {
+        let lang_: Option<Language> = languages::find(By::Both(lang));
+
+        match lang_ {
+            Some(val) => {
+                self.pro_lang = Some(val.url_param);
+                self
+            }
+            _ => {
+                self.pro_lang = Some(lang.to_string());
+                self
+            }
+        }
+    }
+
+    pub fn since(mut self, since: Since) -> Self {
+        let s: String = since.to_string();
+        self.since = Some(s);
+        self
+    }
+
     pub async fn get_data_json(self) -> Value {
         let data = self.get_data().await.unwrap_or(Vec::new());
         let data_json: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
