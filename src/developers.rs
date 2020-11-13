@@ -151,12 +151,12 @@ fn select_data(html: &str) -> Vec<Developer> {
             // println!("x {:?}", repo);
 
             return Developer {
-                name: name,
-                username: username,
-                url: url,
-                sponsor_url: sponsor_url,
-                avatar: avatar,
-                repo: repo,
+                name,
+                username,
+                url,
+                sponsor_url,
+                avatar,
+                repo,
             };
         })
         .collect();
