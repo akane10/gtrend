@@ -3,6 +3,7 @@ use select::document::Document;
 use select::predicate::{Attr, Class, Name};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::borrow::Borrow;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BuiltBy {
@@ -42,7 +43,8 @@ pub struct Builder {
 // impl_builder_T!(for Builder);
 
 impl Builder {
-    pub fn programming_language(mut self, lang: &str) -> Self {
+    pub fn programming_language<T: Borrow<str>>(mut self, lang: T) -> Self {
+        let lang = lang.borrow();
         let lang_: Option<Language> = languages::find(By::Both(lang));
 
         match lang_ {
@@ -63,7 +65,8 @@ impl Builder {
         self
     }
 
-    pub fn spoken_language(mut self, s_lang: &str) -> Self {
+    pub fn spoken_language<T: Borrow<str>>(mut self, s_lang: T) -> Self {
+        let s_lang = s_lang.borrow();
         let s_lang_: Option<Language> = spoken_languages::find(By::Both(s_lang));
 
         match s_lang_ {
@@ -218,9 +221,9 @@ fn select_data(html: &str) -> Vec<Repository> {
                         .map(|x| format!("{}/{}", GITHUB_BASE_URL, x));
 
                     let built_by = BuiltBy {
-                        username: username,
-                        avatar: avatar,
-                        href: href,
+                        username,
+                        avatar,
+                        href,
                     };
 
                     built_by
@@ -234,10 +237,10 @@ fn select_data(html: &str) -> Vec<Repository> {
                     .map(|x| format!("{}/{}.png", GITHUB_BASE_URL, x)),
                 author: username.clone(),
                 name: reponame.clone(),
-                current_star: current_star,
+                current_star,
                 programming_language: lang,
                 description: desc,
-                url: url,
+                url,
                 stars: match stars_forks.len() {
                     n if n > 0 => Some(stars_forks[0].clone()),
                     _ => None,
@@ -246,8 +249,8 @@ fn select_data(html: &str) -> Vec<Repository> {
                     n if n > 1 => Some(stars_forks[1].clone()),
                     _ => None,
                 },
-                built_by: built_by,
-                lang_color: lang_color,
+                built_by,
+                lang_color,
             };
         })
         .collect();
