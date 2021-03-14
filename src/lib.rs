@@ -1,10 +1,13 @@
 pub mod developers;
+pub mod error;
 pub mod languages;
 pub mod repos;
 pub mod spoken_languages;
 
+use crate::error::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::borrow::Borrow;
 
 const GITHUB_BASE_URL: &str = "https://github.com";
 const GITHUB_TRENDING_URL: &str = "https://github.com/trending";
@@ -102,7 +105,8 @@ impl Since {
         }
     }
 
-    pub fn from_str(s: &str) -> Option<Self> {
+    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Self> {
+        let s = s.borrow();
         match s.to_lowercase().as_ref() {
             "daily" => Some(Self::Daily),
             "weekly" => Some(Self::Weekly),
@@ -112,7 +116,7 @@ impl Since {
     }
 }
 
-async fn fetch_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
+async fn fetch_html(url: &str) -> Result<String, Error> {
     let resp = reqwest::get(url).await?.text().await?;
     Ok(resp)
 }
