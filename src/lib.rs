@@ -4,7 +4,7 @@ pub mod languages;
 pub mod repos;
 pub mod spoken_languages;
 
-use crate::error::Error;
+use error::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::borrow::Borrow;
