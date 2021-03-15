@@ -35,8 +35,6 @@ pub struct Builder {
     since: Option<String>,
 }
 
-// impl_builder_T!(for Builder);
-
 impl Builder {
     pub fn programming_language<T: Borrow<str>>(mut self, lang: T) -> Self {
         let lang = lang.borrow();
@@ -67,7 +65,6 @@ impl Builder {
         Ok(Value::Array(data_json))
     }
 
-    // #[tokio::main]
     pub async fn get_data(self) -> Result<Vec<Developer>, Error> {
         let params_url: String = match (self.pro_lang, self.since) {
             (Some(l), Some(s)) => format!("/{}?since={}", l, s),

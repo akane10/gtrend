@@ -41,8 +41,6 @@ pub struct Builder {
     since: Option<String>,
 }
 
-// impl_builder_T!(for Builder);
-
 impl Builder {
     pub fn programming_language<T: Borrow<str>>(mut self, lang: T) -> Self {
         let lang = lang.borrow();

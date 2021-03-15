@@ -12,41 +12,6 @@ use std::borrow::Borrow;
 const GITHUB_BASE_URL: &str = "https://github.com";
 const GITHUB_TRENDING_URL: &str = "https://github.com/trending";
 
-trait BuilderT {
-    fn programming_language(self, lang: &str) -> Self;
-    fn since(self, since: Since) -> Self;
-}
-
-// https://stackoverflow.com/questions/39150216/implementing-a-trait-for-multiple-types-at-once
-#[macro_export]
-macro_rules! impl_builder_T {
-    (for $($t:ty),+) => {
-        $(impl BuilderT for $t {
-            fn programming_language(mut self, lang: &str) -> Self {
-                let lang_: Option<Language> = languages::find(By::Both(lang));
-
-                match lang_ {
-                        Some(val) => {
-                            self.pro_lang = Some(val.url_param);
-                            self
-                    }
-                        _ => {
-                            self.pro_lang = Some(lang.to_string());
-                            self
-                    }
-                }
-            }
-
-            fn since(mut self, since: Since) -> Self {
-                let s: String = since.to_string();
-                self.since = Some(s);
-                self
-            }
-
-        })*
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all(serialize = "camelCase"))]
 pub struct Language {
