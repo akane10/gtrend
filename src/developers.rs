@@ -3,6 +3,7 @@ use select::document::Document;
 use select::predicate::{Class, Name};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::borrow::Borrow;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Repo {
@@ -36,7 +37,8 @@ pub struct Builder {
 // impl_builder_T!(for Builder);
 
 impl Builder {
-    pub fn programming_language(mut self, lang: &str) -> Self {
+    pub fn programming_language<T: Borrow<str>>(mut self, lang: T) -> Self {
+        let lang = lang.borrow();
         let lang_: Option<Language> = languages::find(By::Both(lang));
 
         match lang_ {
