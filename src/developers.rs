@@ -60,11 +60,11 @@ impl Builder {
         self
     }
 
-    pub async fn get_data_json(self) -> Value {
-        let data = self.get_data().await.unwrap_or(Vec::new());
+    pub async fn get_data_json(self) -> Result<Value, Error> {
+        let data = self.get_data().await?;
         let data_json: Vec<Value> = data.into_iter().map(|x| json!(x)).collect();
 
-        Value::Array(data_json)
+        Ok(Value::Array(data_json))
     }
 
     // #[tokio::main]
