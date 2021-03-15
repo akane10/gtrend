@@ -20,21 +20,21 @@ use gtrend::Since::{Daily, Weekly, Monthly};
 use gtrend::{repos, developers, languages, Since, Language, spoken_languages};
 use gtrend::repos::Repository;
 use gtrend::developers::Developer;
-use std::error::Error;
+use gtrend::Error;
 
 fn main(){
-    let repos_data: Result<Vec<Repository>, Box<dyn Error>> = repos::builder()
+    let repos_data: Result<Vec<Repository>, Error> = repos::builder()
           .programming_language("rust")
           .since(Daily)
           .spoken_language("en")
           .get_data();
 
-    let dev_data: Result<Vec<Developer>, Box<dyn Error>> = developers::builder()
+    let dev_data: Result<Vec<Developer>, Error> = developers::builder()
           .programming_language("rust")
           .since(Weekly)
           .get_data();
 
-    let repos_data: serde_json::Value = repos::builder()
+    let repos_data: Result<serde_json::Value, Error> = repos::builder()
           .programming_language("rust")
           .since(Monthly)
           .spoken_language("en")
@@ -42,7 +42,7 @@ fn main(){
 
     println!("repos_data {:?}", repos_data.unwrap());
     println!("dev_data {:?}", dev_data.unwrap());
-    println!("repos_data_json {:?}", repos_data_json);
+    println!("repos_data_json {:?}", repos_data_json.unwrap());
 
 
     // Convert Since to String and str
