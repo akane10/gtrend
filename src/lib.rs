@@ -4,7 +4,6 @@ pub mod languages;
 pub mod repos;
 pub mod spoken_languages;
 
-use error::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::borrow::Borrow;
@@ -81,7 +80,7 @@ impl Since {
     }
 }
 
-async fn fetch_html(url: &str) -> Result<String, Error> {
+async fn fetch_html(url: &str) -> Result<String, error::Error> {
     let resp = reqwest::get(url).await?.text().await?;
     Ok(resp)
 }
