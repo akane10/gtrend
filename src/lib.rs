@@ -193,7 +193,11 @@ mod tests {
 
     #[tokio::test]
     async fn repo_json() {
-        let data: serde_json::Value = repos::builder().since(Since::Weekly).get_data_json().await;
+        let data: serde_json::Value = repos::builder()
+            .since(Since::Weekly)
+            .get_data_json()
+            .await
+            .unwrap();
 
         assert!(data.is_array());
     }
@@ -312,7 +316,7 @@ mod tests {
 
     #[tokio::test]
     async fn developers_json() {
-        let data = developers::builder().get_data_json().await;
+        let data = developers::builder().get_data_json().await.unwrap();
 
         // println!("{:?}", data);
         assert!(data.is_array());
