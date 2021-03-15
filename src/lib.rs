@@ -4,6 +4,8 @@ pub mod languages;
 pub mod repos;
 pub mod spoken_languages;
 
+pub use error::Error;
+
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::borrow::Borrow;
