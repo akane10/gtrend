@@ -1,3 +1,4 @@
+use crate::error::Error;
 use crate::*;
 use select::document::Document;
 use select::predicate::{Class, Name};
@@ -67,7 +68,7 @@ impl Builder {
     }
 
     // #[tokio::main]
-    pub async fn get_data(self) -> Result<Vec<Developer>, Box<dyn std::error::Error>> {
+    pub async fn get_data(self) -> Result<Vec<Developer>, Error> {
         let params_url: String = match (self.pro_lang, self.since) {
             (Some(l), Some(s)) => format!("/{}?since={}", l, s),
             (None, Some(s)) => format!("?since={}", s),
@@ -76,20 +77,7 @@ impl Builder {
         };
 
         let url = format!("{}{}{}", GITHUB_TRENDING_URL, "/developers", params_url);
-
-        // println!("{}", url);
-
-        let html = fetch_html(&url).await;
-        let data: Vec<Developer> = match html {
-            Ok(txt) => select_data(&txt),
-            Err(e) => {
-                println!("err: {}", e);
-                Vec::new()
-            }
-        };
-
-        // println!("data result {:?}", data);
-        Ok(data)
+        fetch_html(&url).await.and_then(|x| Ok(select_data(&x)))
     }
 }
 

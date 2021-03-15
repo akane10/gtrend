@@ -1,3 +1,4 @@
+use crate::error::Error;
 use crate::*;
 use select::document::Document;
 use select::predicate::{Attr, Class, Name};
@@ -88,7 +89,7 @@ impl Builder {
         Value::Array(data_json)
     }
 
-    pub async fn get_data(&self) -> Result<Vec<Repository>, Box<dyn std::error::Error>> {
+    pub async fn get_data(&self) -> Result<Vec<Repository>, Error> {
         let pro_lang_url: String = self
             .pro_lang
             .as_ref()
@@ -103,20 +104,7 @@ impl Builder {
         };
 
         let url = format!("{}{}{}", GITHUB_TRENDING_URL, pro_lang_url, optional_params);
-
-        // println!("{}", url);
-
-        let html = fetch_html(&url).await;
-        let data: Vec<Repository> = match html {
-            Ok(txt) => select_data(&txt),
-            Err(e) => {
-                println!("err: {}", e);
-                Vec::new()
-            }
-        };
-
-        // println!("data result {:?}", data);
-        Ok(data)
+        fetch_html(&url).await.and_then(|x| Ok(select_data(&x)))
     }
 }
 
