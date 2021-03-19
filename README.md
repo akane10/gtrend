@@ -22,23 +22,24 @@ use gtrend::repos::Repository;
 use gtrend::developers::Developer;
 use gtrend::Error;
 
+#[tokio::main]
 fn main(){
     let repos_data: Result<Vec<Repository>, Error> = repos::builder()
           .programming_language("rust")
           .since(Daily)
           .spoken_language("en")
-          .get_data();
+          .get_data().await;
 
     let dev_data: Result<Vec<Developer>, Error> = developers::builder()
           .programming_language("rust")
           .since(Weekly)
-          .get_data();
+          .get_data().await;
 
     let repos_data: Result<serde_json::Value, Error> = repos::builder()
           .programming_language("rust")
           .since(Monthly)
           .spoken_language("en")
-          .get_data_json();
+          .get_data_json().await;
 
     println!("repos_data {:?}", repos_data.unwrap());
     println!("dev_data {:?}", dev_data.unwrap());
