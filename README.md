@@ -23,7 +23,7 @@ use gtrend::developers::Developer;
 use gtrend::Error;
 
 #[tokio::main]
-fn main(){
+async fn main(){
     let repos_data: Result<Vec<Repository>, Error> = repos::builder()
           .programming_language("rust")
           .since(Daily)
