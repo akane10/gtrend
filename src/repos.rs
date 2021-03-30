@@ -168,7 +168,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             };
 
             let stars_forks: Vec<u32> = node
-                .find(Class("muted-link"))
+                .find(Class("Link--muted"))
                 .map(|x| {
                     let s = escape(x.text()).replace(",", "");
                     s.parse::<u32>().unwrap()
@@ -216,7 +216,7 @@ fn select_data(html: &str) -> Vec<Repository> {
                 })
                 .collect::<Vec<_>>();
 
-            // println!("x: {:?}", build_by);
+            // println!("x: {:?}", stars_forks);
             return Repository {
                 avatar: username
                     .clone()
