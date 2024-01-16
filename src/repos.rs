@@ -125,7 +125,7 @@ fn select_data(html: &str) -> Vec<Repository> {
             };
 
             let (username, reponame) = node
-                .find(Name("h1"))
+                .find(Name("h2"))
                 .next()
                 .and_then(|x| x.find(Name("a")).next())
                 .and_then(|x| x.attr("href"))
